@@ -1,2 +1,12 @@
 backend/node_modules/
 
+# SQLite database
+*.sqlite
+*.sqlite3
+data/
+backend/data/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

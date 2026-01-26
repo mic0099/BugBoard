@@ -5,8 +5,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";  
 import cookieParser from "cookie-parser"; 
-import { bugRouter } from "./routes/bugRouter"; 
-import { authRouter } from "./routes/authRouter";  
+import { bugRouter } from "./routes/bugRouter.js"; 
+import { authRouter } from "./routes/authRouter.js";  
+import "./models/Database.js";
+
 
 const __filename = fileURLToPath(import.meta.url); 
 const __dirname = dirname(__filename); 
