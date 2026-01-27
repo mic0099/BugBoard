@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-
+//aggiornare chiave esterna
 export function createModel(database){
     database.define('RefreshToken',{
         id: {
