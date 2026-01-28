@@ -1,8 +1,13 @@
 import { DataTypes } from "sequelize" 
-//definire primary key per user
-//gestire formattazione password, usrname e email e gestione spazi stringhe
+
+//gestire formattazione password e gestione spazi stringhe
 export function createModel(database) { 
   database.define('User', {
+    userId: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
     email: {
      type: DataTypes.STRING,
      allowNull: false,
@@ -13,32 +18,48 @@ export function createModel(database) {
       msg: 'invalid email address' 
       },
        len: {
-        args: [5, 255],
+        args: [5, 100],
         msg: 'email is too long' 
        }
     }
   },
-    userName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-        len: {
-            args: [3, 100],
-            msg:'the username must between 3 and 100 characters long',
-        },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+      len: {
+          args: [3, 30],
+          msg:'the name must between 3 and 30 characters long',
       },
     },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate:{ 
-         notEmpty: true,
-         len: {
-             args:[6,100],
-             msg:"the password must between 6 and 100 characters long",
-         },
+  },
+  surname: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+      len: {
+          args: [3, 30],
+          msg:'the surname must between 3 and 30 characters long',
+      },
     },
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate:{ 
+      notEmpty: true,
+      len: {
+        args:[6,100],
+        msg:"the password must between 6 and 100 characters long",
+      },
+    },
+  },
+  admin: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   },
   }, {
     tableName: 'User', 

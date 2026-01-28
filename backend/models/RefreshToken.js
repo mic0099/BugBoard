@@ -1,10 +1,10 @@
 import { DataTypes } from "sequelize";
-//aggiornare chiave esterna
+
 export function createModel(database){
     database.define('RefreshToken',{
-        id: {
+        tokenId: {
             type: DataTypes.INTEGER, 
-            autoincrement:true,
+            autoIncrement:true,
             primaryKey:true,
         },
         token: {
@@ -16,9 +16,16 @@ export function createModel(database){
             type: DataTypes.DATE, 
             allowNull:false,
         }, 
-        userName:{
-            type:DataTypes.STRING, 
-            allowNull:false, 
+        userId:{
+            type: DataTypes.INTEGER, 
+            allowNull: false, 
+            references: {
+                model: 'User',
+                key: 'userId',
+            },
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE'
+            
         }
     },{
         tableName:'RefreshToken',
