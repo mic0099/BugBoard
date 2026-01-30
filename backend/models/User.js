@@ -18,7 +18,7 @@ export function createModel(database) {
       msg: 'invalid email address' 
       },
        len: {
-        args: [5, 100],
+        args: [6, 254],
         msg: 'email is too long' 
        }
     }
@@ -51,8 +51,8 @@ export function createModel(database) {
     validate:{ 
       notEmpty: true,
       len: {
-        args:[6,100],
-        msg:"the password must between 6 and 100 characters long",
+        args:[8,64],
+        msg:"the password must between 8 and 64 characters long",
       },
     },
   },

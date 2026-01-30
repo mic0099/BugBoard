@@ -55,7 +55,7 @@ Issue.belongsToMany(Tag, { through: 'IssueTags', foreignKey: 'issueId' });
 Tag.belongsToMany(Issue, { through: 'IssueTags', foreignKey: 'tagId' });
 
 
-User.addHook('beforeCreate',async (user)=>{ //hook per hash delle password 
+User.addHook('beforeCreate',async (user)=>{ 
      const salt = await bcrypt.genSalt(10);
      user.password = await bcrypt.hash(user.password,salt);  
 });

@@ -11,7 +11,9 @@ export function createModel(database){
             type: DataTypes.STRING(500),
             allowNull: true,
             validate: {
-                isUrl: true,
+                isUrl: {
+                    msg: "Url is not valid" 
+                },
                 notEmpty: true
             }
 
@@ -24,7 +26,7 @@ export function createModel(database){
                 key: 'issueId'
             },
             onUpdate: 'CASCADE',
-            onDelete: 'CASCADE'
+            //onDelete: 'CASCADE'
         }
     }, {
         tableName: 'Image',

@@ -13,8 +13,8 @@ export function createModel(database){
             validate: {
                 notEmpty: true,
                 len: {
-                    args: [3,50],
-                    msg: 'Title must between 3 and 50 characters long'
+                    args: [3,15],
+                    msg: 'Title must between 3 and 15 characters long' 
                 }
             }
         },
@@ -31,19 +31,16 @@ export function createModel(database){
         },
         priority: {
             type: DataTypes.ENUM('low', 'medium', 'high', 'blocker'),
-            defaultValue: 'medium',
             allowNull: false
 
         },
         type: {
             type: DataTypes.ENUM('question', 'bug', 'documentation', 'feature'),
-            defaultValue: 'bug',
             allowNull: false
 
         },
         status: {
-            type: DataTypes.ENUM('open', 'todo', 'in_progress', 'closed'),
-            defaultValue: 'todo',
+            type: DataTypes.ENUM('open', 'todo', 'in_progress', 'closed'), 
             allowNull: false
         },
         userId: {
@@ -54,7 +51,7 @@ export function createModel(database){
                 key: 'userId'
             },
             onUpdate: 'CASCADE',
-            onDelete: 'CASCADE'
+           // onDelete: 'CASCADE'
         },
         projectId: {
             type: DataTypes.INTEGER,
