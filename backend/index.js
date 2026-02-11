@@ -5,10 +5,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";  
 import cookieParser from "cookie-parser"; 
-import { bugRouter } from "./routes/bugRouter.js"; 
-import { authRouter } from "./routes/authRouter.js";  
+import { authRouter } from "./routes/authRouter.js"; 
+import { bugBoardRouter } from "./routes/bugBoardRouter.js"; 
 import "./models/Database.js";
-import { issueRouter } from "./routes/issueRouter.js";
+
 
 
 const __filename = fileURLToPath(import.meta.url); 
@@ -34,10 +34,9 @@ app.use(express.json());
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
 
-
-app.use(bugRouter);   
-app.use(authRouter);  
-app.use(issueRouter);   
+ 
+app.use(authRouter);
+app.use(bugBoardRouter);
 
 
 app.use((req, res, next) => {
