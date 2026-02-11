@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import { bugRouter } from "./routes/bugRouter.js"; 
 import { authRouter } from "./routes/authRouter.js";  
 import "./models/Database.js";
+import { issueRouter } from "./routes/issueRouter.js";
 
 
 const __filename = fileURLToPath(import.meta.url); 
@@ -35,7 +36,8 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 app.use(bugRouter);   
-app.use(authRouter);     
+app.use(authRouter);  
+app.use(issueRouter);   
 
 
 app.use((req, res, next) => {
