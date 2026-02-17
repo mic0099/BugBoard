@@ -7,7 +7,7 @@ import { dirname } from "path";
 import cookieParser from "cookie-parser"; 
 import { authRouter } from "./routes/authRouter.js"; 
 import { bugBoardRouter } from "./routes/bugBoardRouter.js"; 
-import "./models/Database.js";
+
 
 
 
@@ -22,12 +22,7 @@ const port=process.env.PORT;
 const app = express();  
 
 app.use(cookieParser()); 
-app.use(cors({
-   origin:'http://localhost:4200', 
-   credentials:true,
-   methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-   allowedHeaders: ['Content-Type','Authorization']
-})); 
+app.use(cors()); 
 
 app.use(express.json());   
 

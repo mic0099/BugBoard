@@ -7,8 +7,9 @@ import jwt from 'jsonwebtoken'
 
 export class authController{
 
-    static async creaUser(req){ 
-         
+    static async creaUser(req,res,next){ 
+    
+    try{    
         if(!req.body.email){
             controllErr('missing parameter email is required',400)
         }
@@ -25,7 +26,7 @@ export class authController{
           controllErr("missing parameter password is required",400);
          } 
 
-         if(!req.body.admin){
+         if(req.body.admin===undefined){
           controllErr("missing parameter admin is required",400);
          } 
     
@@ -36,8 +37,12 @@ export class authController{
           password: req.body.password, 
           admin: req.body.admin
         });
-    
-        return user
+   
+        res.status(201).json(user)
+        
+    }catch(err){
+        next(err)
+    }    
 
     } 
  
@@ -61,7 +66,7 @@ export class authController{
              controllErr("invalid username or password",401); 
         }
            const accessToken = jwt.sign(
-           {userId:lUser.userId}, 
+           {userId:lUser.userId,admin:lUser.admin}, 
            process.env.TOKEN_SECRET,
            {expiresIn: '10m'}, 
        ); 
@@ -86,12 +91,42 @@ export class authController{
        return {
            userId:lUser.userId, 
            name:lUser.name,
-           lastname:lUser.lastname,  
+           lastname:lUser.surname,  
            accessToken,
            refreshToken,
        }
         
        }
+
+    static async rigToken(req,res,next){
+    try{
+      if(!req.cookies.refreshToken){
+         controllErr("token not found",401);
+      }   
+  
+    const verifyT = await RefreshToken.findOne({where:{token:req.cookies.refreshToken}});
+    if(!verifyT){
+        controllErr('token not found',400);
+    }
+    const user = await User.findByPk(verifyT.userId); 
+    if(req.body.rememberMe){
+      if(verifyT.expiresAt<new Date()){
+        await verifyT.destroy(); 
+        controllErr("refreshToken scaduto",403); 
+      }
+    }
+        const accessToken = jwt.sign(
+        {userId:user.userId,admin:user.admin}, 
+        process.env.TOKEN_SECRET,
+        {expiresIn: '10m'}, 
+    ); 
+    
+    return res.json({accessToken:accessToken}); 
+    }catch(err){
+        next(err);
+    }
+
+    }   
 
     static verifyToken(token,call){
             jwt.verify(token,process.env.TOKEN_SECRET,call); 

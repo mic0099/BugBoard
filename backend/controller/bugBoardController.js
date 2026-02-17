@@ -4,6 +4,7 @@ import { Project } from "../models/Database.js";
 import { Comment } from "../models/Database.js"
 import { Tag } from "../models/Database.js" 
 import { controllErr } from "../utils/controllError.js";
+import { Image } from "../models/Database.js";
 
 export class BugBoardController {
 
@@ -130,7 +131,8 @@ export class BugBoardController {
         }
     }
 
-    static async comment(req){ 
+    static async comment(req,res,next){ 
+     try{   
         if(!req.body.issueId){
            controllErr("missing required field: issueId",400) 
         }
@@ -149,18 +151,23 @@ export class BugBoardController {
          userId: req.body.userId
         })
  
-        const allCommentForIssue = Comment.findAll({
+        const allCommentForIssue = await Comment.findAll({
                where:{issueId:req.body.issueId},
                order:[['createdAt','DESC']], 
                raw:true,
         })
  
-     return allCommentForIssue; 
+     return res.status(200).json(allCommentForIssue); 
+
+     }catch(err){
+        next(err); 
+     } 
  
-    }
+}
  
-    static async createtag(req){
-       
+    static async createtag(req,res,next){
+    
+    try{    
         if(!req.body.issueId){
           controllErr('missing issueId',404) 
         } 
@@ -201,11 +208,15 @@ export class BugBoardController {
               }
               
            }
+           return res.status(200).json("tag associated to the post"); 
+        }catch(err){
+            next(err); 
+        }   
  
     }
  
-    static async findIssueByTag(req){
-         
+    static async findIssueByTag(req,res,next){
+      try{   
           if(!req.query.content){
              controllErr('missing tag',400)
           }
@@ -224,8 +235,51 @@ export class BugBoardController {
              joinTableAttributes:[]
          })
  
- return issue; 
+        return res.status(200).json(issue);
+
+      }catch(err){
+        next(err); 
+      } 
  
     }
+
+    static async update_image(req,res,next){ 
+
+    try{    
+      if (!req.file) {
+       controllErr("you must provide a file to upload the post",400);
+     }
+
+     if(!req.body.issueId){
+        controllErr("missing required field: issueId",400) 
+     }
+
+     const issue = await Issue.findByPk(req.body.issueId); 
+     if(!issue){
+        controllErr("Issue not found",404); 
+     }
+
+     const verifyIss = await Image.findOne({where:{issueId:req.body.issueId}}) 
+     if(verifyIss){
+        controllErr("Issue already has an associated image",409); 
+     }
+
+      const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`; 
+      console.log(imageUrl);
+
+            const newPost = await Image.create({
+             
+             url:imageUrl,
+             userId: req.user.userId, 
+             issueId: req.body.issueId
+
+           });
+
+      return res.json({newPost});
+
+    }catch(err){
+        next(err) 
+    }    
+ }
 
 }

@@ -11,10 +11,7 @@ export function createModel(database){
             type: DataTypes.STRING(500),
             allowNull: true,
             validate: {
-                isUrl: {
-                    msg: "Url is not valid" 
-                },
-                notEmpty: true
+             notEmpty: true
             }
 
         },

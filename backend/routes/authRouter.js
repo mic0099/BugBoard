@@ -1,5 +1,7 @@
 import {Router} from "express"; 
-import {authController} from "../controller/authController.js"
+import {authController} from "../controller/authController.js"; 
+import {requireAdmin} from "../middleware/requireAdmin.js"
+import {enforceAuth} from "../middleware/authorization.js"
 
 export const authRouter = Router(); 
 
@@ -33,11 +35,5 @@ authController.logIn(req)
     
 }); 
 
-authRouter.post("/register",(req,res,next)=>{
-    authController.creaUser(req)
-     .then((response)=>{
-        res.json(response)
-     }).catch((error)=>{
-        next(error)
-     })
-})
+authRouter.post("/register",enforceAuth,requireAdmin,authController.creaUser);
+authRouter.get("/refreshtoken",authController.rigToken); 
