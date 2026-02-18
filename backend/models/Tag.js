@@ -23,7 +23,7 @@ export function createModel(database){
         },
 
         userId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.UUID,
             allowNull: false,
             references: {
                 tableName: 'User',

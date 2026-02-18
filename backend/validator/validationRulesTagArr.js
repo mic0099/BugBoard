@@ -3,7 +3,7 @@ import validator from "validator";
 
 
 export const validationRulesTagArr=[
-  body("content")
+  body("tags")
    .customSanitizer(value=> Array.isArray(value) ? value : [value])
    .isArray().withMessage("content must be an array")
    .bail()

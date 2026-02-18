@@ -17,7 +17,7 @@ export function createModel(database){
             allowNull:false,
         }, 
         userId:{
-            type: DataTypes.INTEGER, 
+            type: DataTypes.UUID, 
             allowNull: false, 
             references: {
                 model: 'User',

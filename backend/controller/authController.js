@@ -72,7 +72,7 @@ export class authController{
        ); 
    
            const refreshToken = jwt.sign(
-            {userId:lUser.userId}, 
+            {userId:lUser.userId,admin:lUser.admin},  
             process.env.TOKEN_SECRET,
             {expiresIn:'7d'}, 
        );
@@ -98,35 +98,48 @@ export class authController{
         
        }
 
-    static async rigToken(req,res,next){
-    try{
-      if(!req.cookies.refreshToken){
-         controllErr("token not found",401);
-      }   
-  
-    const verifyT = await RefreshToken.findOne({where:{token:req.cookies.refreshToken}});
-    if(!verifyT){
-        controllErr('token not found',400);
-    }
-    const user = await User.findByPk(verifyT.userId); 
-    if(req.body.rememberMe){
-      if(verifyT.expiresAt<new Date()){
-        await verifyT.destroy(); 
-        controllErr("refreshToken scaduto",403); 
-      }
-    }
-        const accessToken = jwt.sign(
-        {userId:user.userId,admin:user.admin}, 
-        process.env.TOKEN_SECRET,
-        {expiresIn: '10m'}, 
-    ); 
-    
-    return res.json({accessToken:accessToken}); 
-    }catch(err){
-        next(err);
+static async rigToken(req, res, next){
+  try{
+    const refreshToken = req.cookies.refreshToken;
+
+    if(!refreshToken){
+      controllErr("token not found",401);
     }
 
-    }   
+
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.TOKEN_SECRET
+    );
+
+
+    const storedToken = await RefreshToken.findOne({
+      where: { token: refreshToken }
+    });
+
+    if(storedToken){
+      if(storedToken.expiresAt < new Date()){
+        await storedToken.destroy();
+        controllErr("refreshToken scaduto",403);
+      }
+    }
+
+    const accessToken = jwt.sign(
+      {
+        userId: decoded.userId,
+        admin: decoded.admin
+      },
+      process.env.TOKEN_SECRET,
+      { expiresIn: '10m' }
+    );
+
+    return res.json({ accessToken });
+
+  }catch(err){
+    next(err);
+  }
+}
+
 
     static verifyToken(token,call){
             jwt.verify(token,process.env.TOKEN_SECRET,call); 

@@ -26,7 +26,7 @@ export class BugBoardController {
             res.status(201).json({
                 success: true,
                 message: "project created successfully",
-                data: newProject
+                newProject
             });
 
         }catch(error){
@@ -39,20 +39,19 @@ export class BugBoardController {
     static async addIssue(req,res,next) {
        
         try{
-            const {title,description, priority, type, status, userId, projectId } = req.body;
+            const {title,description, priority, type, status, projectId } = req.body;
         
-            if(!title || !description || !priority || !type || !status || !userId || !projectId ) {
+            if(!title || !description || !priority || !type || !status || !projectId ) {
                 controllErr("missing required fields", 400);
             }
 
-      
             const issue = await Issue.create({
                 title,
                 description,
                 priority,
                 type,
                 status,
-                userId,
+                userId:req.user.userId,
                 projectId
             });
 
@@ -93,7 +92,14 @@ export class BugBoardController {
                     {
                         model:Project,
                         attributes: ['name']
-                    } 
+                    }, 
+                    {
+                        model: Comment
+                    },
+                    {
+                        model: Image,
+                    }  
+
                 ]
             });
 
@@ -109,12 +115,21 @@ export class BugBoardController {
     static async updateStatus(req,res,next){
 
         try {
-            const {issueId, status}=req.body;
+
+            if(!req.body.issueId){
+               controllErr("missing required field: issueId",400);  
+            }
+
+            if(!req.body.status){
+                controllErr("missing required field: status",400)
+            }
+
+            const issueId = req.body.issueId; 
+            const status = req.body.status; 
 
             const issue = await Issue.findByPk(issueId);
 
             if(!issue) {
-                
                 controllErr("Issue not found", 400);
             }
 
@@ -137,7 +152,7 @@ export class BugBoardController {
            controllErr("missing required field: issueId",400) 
         }
  
-        if(!req.body.userId){
+        if(!req.user.userId){
            controllErr("missing required field: userId",400) 
         }
  
@@ -148,7 +163,7 @@ export class BugBoardController {
         await Comment.create({
          content: req.body.content, 
          issueId: req.body.issueId, 
-         userId: req.body.userId
+         userId: req.user.userId
         })
  
         const allCommentForIssue = await Comment.findAll({
@@ -178,11 +193,11 @@ export class BugBoardController {
          controllErr('issue not found',404) 
         }
  
-        if(!req.body.userId){
+        if(!req.user.userId){
          controllErr('missing userId',404) 
         }
  
-        if(issue.userId!==req.body.userId){
+        if(issue.userId!==req.user.userId){
          controllErr("you can't add tags a post that isn't yours",400)
         }
  
@@ -196,7 +211,7 @@ export class BugBoardController {
                const [newtag,created] = await Tag.findOrCreate({
                      where: {content:tagContent},
                      defaults:{
-                         userId:req.body.userId
+                         userId:req.user.userId
                      }
               });
               const verifTag = await issue.hasTag(newtag);
@@ -270,7 +285,6 @@ export class BugBoardController {
             const newPost = await Image.create({
              
              url:imageUrl,
-             userId: req.user.userId, 
              issueId: req.body.issueId
 
            });

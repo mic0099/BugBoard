@@ -4,8 +4,8 @@ import { DataTypes } from "sequelize"
 export function createModel(database) { 
   database.define('User', {
     userId: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
     email: {
