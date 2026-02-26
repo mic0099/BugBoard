@@ -1,0 +1,55 @@
+<div class="min-h-screen w-full bg-gray-800 flex flex-col items-center justify-center p-4">
+
+  <form
+    [formGroup]="loginForm"
+    (ngSubmit)="onSubmit()"
+    class="w-full max-w-md rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md shadow-xl p-6 sm:p-8 text-white"
+  >
+    <h2 class="text-center text-3xl font-semibold tracking-tight mb-6">Log in</h2>
+
+    <!-- Username -->
+    <label for="email" class="block text-sm text-white/80">Email</label> 
+    <input
+      id="email"
+      type="email" 
+      placeholder="your email"
+      formControlName="email"
+      autocomplete="off"
+      class="mt-2 w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 outline-none placeholder-white/50
+             focus:border-white/40 focus:ring-2 focus:ring-white/30 transition"
+    />
+
+    <!-- Password -->
+    <label for="password" class="block text-sm text-white/80 mt-5">Password</label>
+    <input
+      id="password"
+      type="password"
+      placeholder="your password"
+      formControlName="password"
+      autocomplete="off"
+      class="mt-2 w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 outline-none placeholder-white/50
+             focus:border-white/40 focus:ring-2 focus:ring-white/30 transition"
+    />
+
+  <label class="flex items-center text-sm text-white/80 mt-4" for="rememberMe">
+
+       <input 
+         id="rememberMe"
+         type="checkbox"
+         formControlName="rememberMe"
+         class="mr-2 h-4 w-4 rounded border-white/20 bg-transparent text-white focus:ring-white/40 focus:ring-2 transition"
+       />
+       Remember me      
+  </label> 
+
+    <button
+      type="submit"
+      class="mt-6 w-full rounded-xl bg-white/20 hover:bg-white/30 px-4 py-3 font-medium
+             shadow-lg shadow-black/20 transition focus:outline-none focus:ring-2 focus:ring-white/30"
+    >
+      Log in
+    </button>
+
+  </form>
+</div>
+

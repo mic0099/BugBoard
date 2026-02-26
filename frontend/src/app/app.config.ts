@@ -1,14 +1,45 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig,inject,provideAppInitializer } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideToastr } from 'ngx-toastr'; 
+//import {authInterceptor} from './interceptors/auth/auth-interceptor'; 
 
+//import { routes } from './mainApp.routs'
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+//import { AuthService } from './services/auth/auth.service';
+
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
-    provideHttpClient()
+    provideAnimations(),
+    provideToastr({
+       positionClass: 'toast-top-right', 
+       timeOut: 3000, 
+       extendedTimeOut: 1500, 
+       closeButton: true, 
+       tapToDismiss:false, 
+       iconClasses:{
+         error:'', 
+         info:'', 
+         success:'', 
+         warning:'',
+       },
+       progressBar: true, 
+       progressAnimation: 'increasing', 
+       preventDuplicates: true, 
+       newestOnTop: true, 
+       enableHtml: false, 
+    }),
+    provideHttpClient(
+    //  withInterceptors([authInterceptor]),
+      withFetch()
+    ),
+    provideRouter(routes), 
+    provideAppInitializer(()=>{
+        // const auth = inject(AuthService); 
+        // return auth.bootstrapFromStorage(); //metodo che viene eseguito all'avvio dell'app
+    }),
   ]
 };

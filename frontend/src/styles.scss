@@ -1,0 +1,36 @@
+
+@use 'tailwindcss';
+@use 'ngx-toastr/toastr';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Contenitore sopra tutto */
+.toast-container {
+  @apply z-[9999];
+}
+
+/* Base del toast */
+.toast-container .ngx-toastr {
+  @apply relative rounded-xl shadow-lg border border-white/15
+         bg-white/10 backdrop-blur-md text-white px-4 py-3;
+}
+
+/* Titolo + messaggio */
+.toast-container .ngx-toastr .toast-title {
+  @apply font-semibold;
+}
+.toast-container .ngx-toastr .toast-message {
+  @apply text-sm leading-snug;
+}
+
+/* Progress bar */
+.toast-container .ngx-progress {
+  @apply h-1 bg-white/60;
+}
+
+/* Close button (solo in alto a destra) */
+.toast-container .toast-close-button {
+  @apply absolute top-2 right-2 text-white/80 hover:text-white transition;
+}
