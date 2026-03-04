@@ -2,7 +2,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink,Router } from '@angular/router'; 
 import { Component, inject } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; 
+import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';  
+import { AuthApiService } from '../../services/authApiService/authApiService'; 
+import { AuthService } from '../../services/authService/authService';
+import { tap } from 'rxjs';
 
 
 @Component({
@@ -12,8 +15,8 @@ import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angula
   styleUrl: './login.scss',
 })
 export class Login {
- //authApi = inject(AuthApiService); 
- //auth=inject(AuthService); 
+ authApi = inject(AuthApiService); 
+ auth=inject(AuthService); 
  router = inject(Router); 
  toastr= inject(ToastrService); 
 
@@ -43,8 +46,8 @@ onSubmit(){
       return;
     } 
 
-   /* this.authApi.login({ //chiama il back
-       userName: this.loginForm.value.userName as string, //valore passato al back 
+    this.authApi.login({ //chiama il back
+       email: this.loginForm.value.email as string, //valore passato al back 
        password: this.loginForm.value.password as string, //valore passato al back 
        rememberMe: this.loginForm.value.rememberMe as boolean, //valore passato al back 
     })
@@ -72,9 +75,8 @@ onSubmit(){
        },  
        complete: () =>{ 
           this.toastr.success("Login successful, welcome");  
-          this.router.navigate(['/all-memes'],{replaceUrl:true});
        }, 
-    }) */
+    }) 
 
 }
 }

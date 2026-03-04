@@ -91,7 +91,7 @@ export class authController{
        return {
            userId:lUser.userId, 
            name:lUser.name,
-           lastname:lUser.surname,  
+           surname:lUser.surname,  
            accessToken,
            refreshToken,
        }
@@ -144,5 +144,24 @@ static async rigToken(req, res, next){
     static verifyToken(token,call){
             jwt.verify(token,process.env.TOKEN_SECRET,call); 
     }
+
+static async loadUser(req,res,next){
+   if(!req.user.userId){
+    controllErr('Authentication token is missing required claims',401);
+   }
+
+  try{ 
+  const user = await User.findByPk(req.user.userId); 
+  if(!user){
+    controllErr('user not found',404); 
+  }
+  return res.status(200).json({
+    name:user.name, 
+    surname:user.surname
+  })
+  }catch(err){
+    next(err);
+  }
+}    
 
 }
