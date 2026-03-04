@@ -69,7 +69,7 @@ onSubmit(){
             msg="Unable to connection to server. Please check your connection";
           } 
            if(err.status===401){
-            msg="invalid credentials. Please check your username and password"; 
+            msg="invalid credentials. Please check your email and password"; 
           }
           this.toastr.error(msg); 
        },  
