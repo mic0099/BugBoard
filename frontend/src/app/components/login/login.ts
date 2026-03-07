@@ -75,6 +75,7 @@ onSubmit(){
        },  
        complete: () =>{ 
           this.toastr.success("Login successful, welcome");  
+          this.router.navigate(['/issueList']);
        }, 
     }) 
 

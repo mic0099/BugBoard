@@ -13,7 +13,7 @@ export function createModel(database){
             validate: {
                 notEmpty: true,
                 len: {
-                    args: [3,10],
+                    args: [3,50],
                     msg: 'project name must between 3 and 10 characters long'
                 }
             }

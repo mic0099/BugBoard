@@ -7,6 +7,7 @@ import { dirname } from "path";
 import cookieParser from "cookie-parser"; 
 import { authRouter } from "./routes/authRouter.js"; 
 import { bugBoardRouter } from "./routes/bugBoardRouter.js"; 
+import { database } from "./models/Database.js";
 
 
 

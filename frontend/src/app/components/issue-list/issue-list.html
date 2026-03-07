@@ -1,0 +1,92 @@
+<div class="min-h-screen bg-[#F9FAFB] p-6 md:p-10">
+  
+  <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6">
+    <div>
+      <h1 class="text-3xl font-extrabold text-gray-950 tracking-tight">Board delle Issue</h1>
+      <p class="text-gray-600 mt-1.5 text-base">Gestisci e monitora i ticket del progetto.</p>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+      <div class="relative flex-grow sm:w-80">
+        <input type="text" placeholder="Cerca issue..." 
+               class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none shadow-sm">
+        <svg class="absolute left-3 top-3 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      </div>
+      <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        Nuova Issue
+      </button>
+    </div>
+  </div>
+
+  
+  <div class="flex items-center justify-start gap-4 mb-10 w-full overflow-x-auto no-scrollbar"> 
+    <div class="flex bg-gray-50 p-1 rounded-xl">
+      <button *ngFor="let s of ['all', 'open', 'todo', 'in_progress', 'closed']"
+              (click)="setStatusFilter(s)"
+              [ngClass]="activeStatus === s ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+              class="px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all">
+        {{ s.replace('_', ' ') }}
+      </button>
+    </div>
+
+
+
+
+
+
+    <div class="flex items-center gap-3 ml-auto">
+    
+      <div class="relative"> <button 
+        class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-blue-300 transition-all shadow-sm">
+        <span>Priorità</span>
+        <span *ngIf="selectedPriorities.length > 0" class="bg-blue-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">
+          {{ selectedPriorities.length }}
+        </span>
+        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
+        </button>
+
+        <div *ngIf="openedMenu === 'priority'"
+          (click)="$event.stopPropagation()"
+          class="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-2xl z-[100] p-2 flex flex-col gap-1">
+  
+          <label *ngFor="let p of ['blocker', 'high', 'medium', 'low']" 
+            class="flex items-center gap-3 px-3 py-2 hover:bg-blue-50 rounded-lg cursor-pointer group transition-colors">
+            <input type="checkbox" 
+           [checked]="selectedPriorities.includes(p)" 
+           class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+            <span class="text-sm capitalize text-gray-700 group-hover:text-blue-700">{{ p }}</span>
+          </label>
+
+        </div>
+      </div>
+  
+      <div class="relative inline-block text-left"> <button 
+                class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-blue-300 transition-all">
+          <span>Tipo</span>
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
+        </button>
+        
+        <div *ngIf="openedMenu === 'type'"
+        class="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 p-2 top-full">
+        </div>
+      </div>
+
+      <div class="h-8 w-px bg-gray-100 mx-1"></div>
+
+      <button (click)="toggleSortDirection()" class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-blue-700 hover:bg-blue-50 rounded-xl transition-all">
+        <svg [ngClass]="{'rotate-180': sortDirection === 'desc'}" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" stroke-width="2"/></svg>
+        {{ currentSortLabel }}
+      </button>
+    </div>
+  </div> 
+
+
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+    <app-issue-item 
+      *ngFor="let item of filteredIssues" 
+      [issue]="item">
+    </app-issue-item>
+  </div>
+</div>
