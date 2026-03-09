@@ -63,7 +63,7 @@ loadUser() {
         // se per qualche motivo non c'è user nello state, lo ricavo dal token
         const decoded: any = jwtDecode(token);
         const userId: string | undefined = decoded?.userId;
-        const role: 'USER' | 'ADMIN' = decoded?.role === true ? 'ADMIN' : 'USER';
+        const role: 'USER' | 'ADMIN' = decoded?.admin === true ? 'ADMIN' : 'USER';
 
         return {
           ...state,
@@ -123,10 +123,10 @@ updateToken(token:string,throwOnError=false,loadProfile=true){
       }   
 
      let typeRole: 'USER'|'ADMIN' = 'USER'
-     if(decToken.role===true){
+     if(decToken.admin===true){
      typeRole = 'ADMIN'
      } 
-
+console.log("TOKEN DECODED:", decToken)
     this.authState.update(state => ({
          ...state, 
          token:token, 
@@ -155,9 +155,8 @@ updateToken(token:string,throwOnError=false,loadProfile=true){
 }
 
 refreshToken(): Observable<string>{ 
-   return this.http.post<{accessToken: string}>( //richiesta al back per rotta di refresh token 
-         'http://localhost:3000/refreshtokens',
-         {},
+   return this.http.get<{accessToken: string}>( //richiesta al back per rotta di refresh token 
+         'http://localhost:3000/refreshtoken',
          {
             withCredentials:true, //per passare il token come cookie 
             responseType:'json'

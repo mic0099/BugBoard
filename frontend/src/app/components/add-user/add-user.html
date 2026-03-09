@@ -1,0 +1,86 @@
+<div class="min-h-screen w-full bg-gradient-to-br from-slate-700 to-gray-800 flex flex-col items-center justify-center p-4 relative">
+
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.15),transparent_60%)] pointer-events-none"></div>
+
+  <form
+    [formGroup]="userAddForm"
+    (ngSubmit)="onSubmit()"
+    class="w-full max-w-xl rounded-2xl border border-white/15 bg-gray-900/60 backdrop-blur-md shadow-2xl p-6 sm:p-8 text-white relative"
+  >
+
+    <h2 class="text-center text-3xl font-semibold tracking-tight mb-6 text-white">
+      Create user
+    </h2>
+
+    <!-- Name -->
+    <label for="name" class="block text-sm text-gray-300">Name</label>
+    <input
+      id="name"
+      type="text"
+      placeholder="user name"
+      formControlName="name"
+      autocomplete="off"
+      class="mt-2 w-full rounded-xl bg-white/5 border border-white/20 px-4 py-3 outline-none placeholder-gray-400
+             focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition hover:bg-white/10"
+    />
+
+    <!-- Surname -->
+    <label for="surname" class="block text-sm text-gray-300 mt-5">Surname</label>
+    <input
+      id="surname"
+      type="text"
+      placeholder="user surname"
+      formControlName="surname"
+      autocomplete="off"
+      class="mt-2 w-full rounded-xl bg-white/5 border border-white/20 px-4 py-3 outline-none placeholder-gray-400
+             focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition hover:bg-white/10"
+    />
+
+    <!-- Email -->
+    <label for="email" class="block text-sm text-gray-300 mt-5">Email</label>
+    <input
+      id="email"
+      type="email"
+      placeholder="user email"
+      formControlName="email"
+      autocomplete="off"
+      class="mt-2 w-full rounded-xl bg-white/5 border border-white/20 px-4 py-3 outline-none placeholder-gray-400
+             focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition hover:bg-white/10"
+    />
+
+    <!-- Password -->
+    <label for="password" class="block text-sm text-gray-300 mt-5">Password</label>
+    <input
+      id="password"
+      type="password"
+      placeholder="user password"
+      formControlName="password"
+      autocomplete="off"
+      class="mt-2 w-full rounded-xl bg-white/5 border border-white/20 px-4 py-3 outline-none placeholder-gray-400
+             focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition hover:bg-white/10"
+    />
+
+    <!-- Admin checkbox -->
+    <label class="flex items-center text-sm text-gray-300 mt-5 cursor-pointer" for="admin">
+      <input
+        id="admin"
+        type="checkbox"
+        formControlName="admin"
+        class="mr-2 h-4 w-4 rounded border-white/30 bg-transparent text-blue-500 focus:ring-blue-500 focus:ring-2 transition"
+      />
+      Administrator
+    </label>
+
+    <!-- Submit -->
+    <button
+      type="submit"
+      class="mt-6 w-full rounded-xl bg-white/10 hover:bg-white/20 px-4 py-3 font-medium
+             shadow-lg shadow-black/20 hover:scale-105 transition-all
+             focus:outline-none focus:ring-2 focus:ring-white/30"
+    >
+      Create user
+    </button>
+
+  </form>
+
+</div>

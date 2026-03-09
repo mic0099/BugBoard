@@ -68,7 +68,7 @@ export class authController{
            const accessToken = jwt.sign(
            {userId:lUser.userId,admin:lUser.admin}, 
            process.env.TOKEN_SECRET,
-           {expiresIn: '10m'}, 
+           {expiresIn: '1m'}, 
        ); 
    
            const refreshToken = jwt.sign(
@@ -130,7 +130,7 @@ static async rigToken(req, res, next){
         admin: decoded.admin
       },
       process.env.TOKEN_SECRET,
-      { expiresIn: '10m' }
+      { expiresIn: '1m' }
     );
 
     return res.json({ accessToken });
@@ -141,10 +141,11 @@ static async rigToken(req, res, next){
 }
 
 
-    static verifyToken(token,call){
+static verifyToken(token,call){
             jwt.verify(token,process.env.TOKEN_SECRET,call); 
     }
 
+    
 static async loadUser(req,res,next){
    if(!req.user.userId){
     controllErr('Authentication token is missing required claims',401);
