@@ -15,14 +15,12 @@ export class IssueList implements OnInit {
 
   issues: Issue[] = [];
 
-  // Variabili di Stato dei Filtri
   activeStatus: string = 'all';
   selectedPriorities: string[] = [];
   selectedTypes: string[] = [];
   sortDirection: 'asc' | 'desc' = 'desc'; 
   openedMenu: string | null = null;
 
-  // La lista che l'HTML cicla nel *ngFor
   filteredIssues: any[] = [];
 
 
@@ -62,7 +60,7 @@ export class IssueList implements OnInit {
       Issues = Issues.filter(i => this.selectedTypes.includes(i.type));
     }
   
-    // Ordinamento per Data (createdAt)
+    // Ordinamento per Data 
     Issues.sort((a, b) => {
       const dateA = new Date(a.createdAt).getTime();
       const dateB = new Date(b.createdAt).getTime();

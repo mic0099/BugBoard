@@ -1,8 +1,21 @@
-<div class="group bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg hover:border-blue-100 transition-all duration-300 ease-in-out flex flex-col h-full">
+<div class="group relative
+bg-white/5
+border border-white/15
+rounded-2xl
+shadow-lg
+p-6
+hover:-translate-y-1 
+hover:shadow-blue-500/10
+hover:bg-gray-900/60
+hover:border-white/25
+hover:shadow-blue-900/20
+transition-all duration-300
+flex flex-col h-full">
   
     <div class="flex justify-between items-center mb-5">
       <div class="flex items-center gap-2.5">
-        <span class="px-2 py-1 text-xs font-bold uppercase rounded bg-blue-100 text-blue-800">
+        <span class="px-2 py-1 text-xs font-bold uppercase rounded 
+        bg-blue-500/20 text-blue-300 border border-blue-400/20">
           {{ issue.type }}
         </span>
        
@@ -12,9 +25,9 @@
   
       <div class="flex items-center gap-1.5" [title]="'Priorità: ' + issue.priority">
         <span [ngClass]="{
-          'text-red-600 bg-red-100': issue.priority === 'blocker' || issue.priority === 'high',
-          'text-yellow-600 bg-yellow-100': issue.priority === 'medium',
-          'text-green-600 bg-green-100': issue.priority === 'low'
+         'text-red-400 bg-red-500/20 border border-red-400/20': issue.priority === 'blocker' || issue.priority === 'high',
+         'text-yellow-400 bg-yellow-500/20 border border-yellow-400/20': issue.priority === 'medium',
+         'text-green-400 bg-green-500/20 border border-green-400/20': issue.priority === 'low'
         }" class="px-2 py-1 text-xs font-bold uppercase rounded">
           {{ issue.priority }}
         </span>
@@ -22,38 +35,37 @@
     </div>
   
     <div class="flex-grow mb-6">
-      <h3 class="font-semibold text-lg text-gray-900 mb-2 leading-snug group-hover:text-blue-700 transition-colors">
+      <h3 class="text-white font-semibold text-lg mb-2 leading-snug group-hover:text-blue-400 transition-colors">
         {{ issue.title }}
       </h3>
-      <p class="text-gray-600 text-sm leading-relaxed line-clamp-2">
+      <p class="text-gray-300 text-sm leading-relaxed line-clamp-2">
         {{ issue.description }}
       </p>
     </div>
   
-    <div *ngIf="issue.Image" class="mb-6 rounded-lg overflow-hidden border border-gray-100 aspect-[16/9]">
-      <img [src]="issue.Image.url" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-    </div>
   
-    <div class="mt-auto pt-5 border-t border-gray-100 space-y-4">
+    <div class="mt-auto pt-5 border-t border-white/10 space-y-4">
       <div class="flex justify-between items-center gap-4">
         <div class="flex items-center gap-3" *ngIf="issue.User">
-          <div class="w-9 h-9 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-sm font-bold text-blue-800">
+          <div class="w-9 h-9 rounded-full 
+          bg-white/10 
+          border border-white/20 
+          flex items-center justify-center 
+          text-sm font-bold text-blue-300">
             {{ issue.User.name[0] }}{{ issue.User.surname[0] }}
           </div>
           <div class="text-sm">
-            <p class="text-gray-900 font-medium leading-none">{{ issue.User.name }} {{ issue.User.surname }}</p>
-            <p class="text-gray-500 text-xs mt-1">{{ issue.createdAt | date:'d MMM yyyy' }}</p>
+            <p class="text-white font-medium leading-none">{{ issue.User.name }} {{ issue.User.surname }}</p>
+            <p class="text-gray-400 text-xs mt-1">{{ issue.createdAt | date:'d MMM yyyy' }}</p>
           </div>
         </div>
   
-        <span [ngClass]="{
-          'bg-gray-100 text-gray-700': issue.status === 'open',
-          'bg-sky-100 text-sky-800': issue.status === 'todo',
-          'bg-amber-100 text-amber-900': issue.status === 'in_progress',
-          'bg-emerald-100 text-emerald-800': issue.status === 'closed'
-        }" class="px-3 py-1 text-xs font-medium rounded-full capitalize">
-          {{ issue.status.replace('_', ' ') }}
-        </span>
+        <div [ngClass]="{
+          'bg-red-500': issue.status === 'open',
+          'bg-sky-500': issue.status === 'todo',
+          'bg-amber-500': issue.status === 'in_progress',
+          'bg-emerald-500': issue.status === 'closed'
+        }" class="absolute left-0 top-0 h-full w-1 rounded-l-2xl pointer-events-none"></div>
       </div>
     </div>
   </div>
