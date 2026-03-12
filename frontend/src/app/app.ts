@@ -4,6 +4,8 @@ import { Navbar } from "./components/navbar/navbar";
 import { Footer } from "./components/footer/footer";
 import { CommonModule } from '@angular/common';
 
+import { AuthService } from './services/authService/authService';
+
 
 @Component({
   selector: 'app-root',
@@ -12,5 +14,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app.css'
 })
 export class App {
-  // constructor(private auth: AuthService){
+  constructor(public auth: AuthService){}
 }

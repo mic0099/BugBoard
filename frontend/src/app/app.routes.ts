@@ -7,9 +7,9 @@ import { adminGuard } from './guards/adminGuard/admin-guard';
 
 export const routes: Routes = [
 
-{ path: '', redirectTo: 'login', pathMatch: 'full' },
+{ path: '', redirectTo: '/login', pathMatch: 'full' },
 { path:'login', component:Login}, 
-{ path: 'issueList', component:IssueList}, 
+{ path: 'issueList', component:IssueList,canActivate:[authGuard]}, 
 {path:'addUser', component:AddUser, canActivate:[authGuard,adminGuard] },
 
 ];

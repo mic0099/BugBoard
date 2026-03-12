@@ -1,0 +1,32 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hex-grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="hex-border" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+  </defs>
+  <!-- Esagono sfondo scuro -->
+  <polygon points="24,3 41.6,12.8 41.6,35.2 24,45 6.4,35.2 6.4,12.8" fill="url(#hex-grad)"/>
+  <!-- Bordo esagono -->
+  <polygon points="24,3 41.6,12.8 41.6,35.2 24,45 6.4,35.2 6.4,12.8" fill="none" stroke="url(#hex-border)" stroke-width="1"/>
+
+  <!-- Corpo bug - centrato su cx=24 cy=25 -->
+  <ellipse cx="24" cy="26" rx="6" ry="7.5" fill="white" opacity="0.9"/>
+  <!-- Testa - sopra il corpo -->
+  <circle cx="24" cy="17" r="3" fill="white" opacity="0.9"/>
+  <!-- Antenne -->
+  <line x1="22.5" y1="14.5" x2="20" y2="11" stroke="white" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+  <line x1="25.5" y1="14.5" x2="28" y2="11" stroke="white" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+  <!-- Zampe sx -->
+  <line x1="18" y1="22" x2="14" y2="20" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.8"/>
+  <line x1="18" y1="26" x2="13.5" y2="26" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.8"/>
+  <line x1="18" y1="30" x2="14" y2="32" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.8"/>
+  <!-- Zampe dx -->
+  <line x1="30" y1="22" x2="34" y2="20" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.8"/>
+  <line x1="30" y1="26" x2="34.5" y2="26" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.8"/>
+  <line x1="30" y1="30" x2="34" y2="32" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.8"/>
+</svg>

@@ -23,6 +23,8 @@ export class IssueList implements OnInit {
 
   filteredIssues: any[] = [];
 
+  readonly priorities: Issue['priority'][] = ['blocker', 'high', 'medium', 'low'];
+  readonly types: Issue['type'][] = ['bug', 'feature', 'question', 'documentation'];
 
   constructor(private issueService: BugBoard) {}
 
@@ -75,12 +77,12 @@ export class IssueList implements OnInit {
 
 
 
-  handleStatusChange(issueId: number, newStatus: string) {
+  /*handleStatusChange(issueId: number, newStatus: string) {
     this.issueService.updateStatus(issueId,newStatus).subscribe(() => {
       const iss = this. issues.find(i => i.issueId === issueId);
       if (iss) iss.status = newStatus as any;
     });
-  }
+  }*/
 
 
 
@@ -94,6 +96,50 @@ export class IssueList implements OnInit {
   }
 
   
+  //menu
+  toggleMenu(menu: string, event: MouseEvent) {
+  event.stopPropagation();
+  console.log('toggleMenu chiamato, menu:', menu);
+  setTimeout(() => {
+    this.openedMenu = this.openedMenu === menu ? null : menu;
+    console.log('openedMenu settato a:', this.openedMenu);
+  }, 0);
+}
+
+@HostListener('document:click')
+onDocumentClick() {
+  console.log('document click, chiudo menu');
+  this.openedMenu = null;
+}
+
+
+  togglePriority(priority: string, event: Event) {
+    event.stopPropagation();
+    const idx = this.selectedPriorities.indexOf(priority);
+    if (idx > -1) {
+      this.selectedPriorities.splice(idx, 1);
+    } else {
+      this.selectedPriorities.push(priority);
+    }
+    this.applyFilters();
+  }
+
+  toggleType(type: string, event: Event) {
+    event.stopPropagation();
+    const idx = this.selectedTypes.indexOf(type);
+    if (idx > -1) {
+      this.selectedTypes.splice(idx, 1);
+    } else {
+      this.selectedTypes.push(type);
+    }
+    this.applyFilters();
+  }
+
+
+
+
+
+
   // Cambia la direzione dell'ordinamento
   toggleSortDirection() {
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
