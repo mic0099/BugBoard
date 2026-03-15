@@ -1,0 +1,97 @@
+<div class="min-h-screen flex justify-center items-center w-full bg-gradient-to-br from-slate-700 to-gray-800 p-4">
+
+  <div class="bg-gray-800 text-white rounded-xl shadow-2xl w-full max-w-5xl flex flex-col md:flex-row md:h-[70vh] overflow-auto">
+
+    <!-- IMMAGINE (solo se presente) -->
+    <div 
+      *ngIf="url()"
+      class="w-full md:w-1/2 flex items-center justify-center p-2 md:p-4"
+    >
+      <img 
+        [src]="url()" 
+        alt="Post image"
+        class="max-h-full max-w-full object-contain rounded-md"
+      />
+    </div>
+
+    <!-- COLONNA COMMENTI -->
+    <div
+      [ngClass]="url() ? 'w-full md:w-1/2' : 'w-full'"
+      class="flex flex-col p-6 space-y-4 overflow-y-auto"
+    >
+
+      <!-- LISTA COMMENTI -->
+      <div class="flex-1 overflow-y-auto pr-2 bg-slate-900/40 rounded-xl p-3 space-y-3">
+
+        <ng-container *ngIf="comments().length > 0; else noComments">
+
+          <div
+            *ngFor="let c of comments(); trackBy: trackByComment"
+            class="bg-slate-800/70 border border-white/15 rounded-xl shadow-lg p-4"
+          >
+
+            <!-- NOME + COGNOME -->
+            <p class="text-sm text-blue-300 font-semibold">
+              {{ c.User.name }} {{ c.User.surname }} 
+            </p>
+
+            <!-- CONTENUTO COMMENTO -->
+            <p class="text-gray-200 mt-1" data-testid="comment-test">
+              {{ c.content }}
+            </p>
+
+          </div>
+
+        </ng-container>
+
+        <ng-template #noComments>
+          <p class="text-gray-400 italic">
+            No comments for this post yet
+          </p>
+        </ng-template>
+
+      </div>
+
+      <!-- FORM COMMENTO -->
+      <form
+        [formGroup]="commentForm"
+        (ngSubmit)="addComment()"
+        class="flex items-center space-x-2 pt-2 border-t border-gray-600"
+      >
+
+        <input
+          type="text"
+          placeholder="Insert your comment"
+          id="comment"
+          formControlName="content"
+          class="flex-1 p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <button
+          type="submit"
+          class="px-4 py-2 bg-blue-400 hover:bg-blue-500 rounded-lg text-white font-medium"
+          data-testid="add-comment"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m15 11.25-3 3m0 0-3-3m3 3V6.75m0 7.5V18a.75.75 0 0 1-.75.75H6.75A2.25 2.25 0 0 1 4.5 16.5v-9A2.25 2.25 0 0 1 6.75 5.25h3.06c.42 0 .83.168 1.13.468l1.38 1.38c.3.3.71.468 1.13.468H18a2.25 2.25 0 0 1 2.25 2.25v.38"
+            />
+          </svg>
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>

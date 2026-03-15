@@ -4,7 +4,8 @@ import { Project } from "../models/Database.js";
 import { Comment } from "../models/Database.js"
 import { Tag } from "../models/Database.js" 
 import { controllErr } from "../utils/controllError.js";
-import { Image } from "../models/Database.js";
+import { Image } from "../models/Database.js"; 
+import { Sequelize } from "sequelize";
 
 export class BugBoardController {
 
@@ -67,50 +68,53 @@ export class BugBoardController {
 
 
 
-    static async getIssues(req,res,next) {
+  static async getIssues(req,res,next) {
 
-        try {
+   try {
 
-            const {type,status,priority,sort,order} = req.query;
+    const {type,status,priority,sort,order} = req.query;
 
-            const clausola = {};
-            if (type) clausola.type=type;
-            if (status) clausola.status=status;
-            if (priority) clausola.priority=priority;
+    const clausola = {};
+    if (type) clausola.type = type;
+    if (status) clausola.status = status;
+    if (priority) clausola.priority = priority;
 
-            const ordinamento = sort || 'createdAt';
-            const tipoOrdinamento = order === 'ASC' ? 'ASC' : 'DESC';
-        
-            const issues = await Issue.findAll({
-                where: clausola,
-                order: [[ ordinamento,tipoOrdinamento]],
-                include: [
-                    {
-                        model: User,
-                        attributes: ['name', 'surname']
-                    },
-                    {
-                        model:Project,
-                        attributes: ['name']
-                    }, 
-                    {
-                        model: Comment
-                    },
-                    {
-                        model: Image,
-                    }  
+    const ordinamento = sort || 'createdAt';
+    const tipoOrdinamento = order === 'ASC' ? 'ASC' : 'DESC';
 
-                ]
-            });
+    const issues = await Issue.findAll({
 
-            res.status(200).json(issues);
-        
-        }catch(error){
-            next(error);
-        }
+    where: clausola,
 
-    }
+    order: [[ordinamento,tipoOrdinamento]],
 
+    include: [
+
+      {
+        model: User,
+        attributes: ['name','surname']
+      },
+
+      {
+        model: Project,
+        attributes: ['name']
+      },
+
+      {
+        model: Image
+      }
+
+    ]
+
+  });
+
+  res.status(200).json(issues);
+
+ } catch(error) {
+  next(error);
+ }
+
+}
 
     static async updateStatus(req,res,next){
 
@@ -146,39 +150,102 @@ export class BugBoardController {
         }
     }
 
-    static async comment(req,res,next){ 
-     try{   
-        if(!req.body.issueId){
-           controllErr("missing required field: issueId",400) 
+static async comment(req, res, next) {
+  try {
+
+    if (!req.body.issueId) {
+      controllErr("missing required field: issueId", 400);
+    }
+
+    if (!req.user.userId) {
+      controllErr("missing required field: userId", 400);
+    }
+
+    if (!req.body.content) {
+      controllErr("missing required field: content", 400);
+    }
+
+    const comment = await Comment.create({
+      content: req.body.content,
+      issueId: req.body.issueId,
+      userId: req.user.userId
+    });
+
+    const result = await Comment.findByPk(comment.commentId,{
+      attributes:['commentId','content'],
+      include:[
+        {
+          model:User,
+          attributes:['name','surname']
         }
- 
-        if(!req.user.userId){
-           controllErr("missing required field: userId",400) 
+      ]
+    });
+
+    return res.status(201).json(result);
+
+  } catch (err) {
+    next(err);
+  }
+}
+
+
+static async getComments(req,res,next){
+
+ try{
+
+   if(!req.params.issueId){
+     controllErr("missing issueId",400)
+   }
+
+   const comments = await Comment.findAll({
+
+     where:{issueId:req.params.issueId},
+
+     attributes:['commentId','content'],
+
+     include:[
+       {
+         model:User,
+         attributes:['name','surname']
+       }
+     ],
+
+     order:[['createdAt','DESC']]
+
+   })
+
+   return res.status(200).json(comments)
+
+ }catch(err){
+   next(err)
+ }
+
+} 
+
+static async getImmageForIssue(req,res,next){
+
+     try{
+        if(!req.params.issueId){
+            controllErr('missing issue id',400); 
         }
- 
-        if(!req.body.content){
-         controllErr("missing required field: content",400)
+
+         const image = await Image.findOne({
+          where:{issueId:req.params.issueId}, 
+          attributes:['url']
+        }); 
+
+        if(!image){
+           controllErr('image not found',404)
         }
- 
-        await Comment.create({
-         content: req.body.content, 
-         issueId: req.body.issueId, 
-         userId: req.user.userId
-        })
- 
-        const allCommentForIssue = await Comment.findAll({
-               where:{issueId:req.body.issueId},
-               order:[['createdAt','DESC']], 
-               raw:true,
-        })
- 
-     return res.status(200).json(allCommentForIssue); 
+
+         return res.status(200).json(image); 
 
      }catch(err){
-        next(err); 
-     } 
- 
+        next(err);
+     }
+
 }
+
  
     static async createtag(req,res,next){
     
@@ -230,33 +297,48 @@ export class BugBoardController {
  
     }
  
-    static async findIssueByTag(req,res,next){
-      try{   
-          if(!req.query.content){
-             controllErr('missing tag',400)
-          }
- 
-         const tag = await Tag.findOne({where:{content:req.query.content}})
- 
-         if(!tag){
-           controllErr('tag not found',404) 
-         }
- 
-         const issue = await tag.getIssues({
-            include:[{
-                  model: Comment,
-                  }
-              ], 
-             joinTableAttributes:[]
-         })
- 
-        return res.status(200).json(issue);
+static async findIssueByTag(req,res,next){
+ try{   
 
-      }catch(err){
-        next(err); 
-      } 
- 
-    }
+  if(!req.query.content){
+    controllErr('missing tag',400)
+  }
+
+  const tag = await Tag.findOne({
+    where:{content:req.query.content}
+  })
+
+  if(!tag){
+    controllErr('tag not found',404) 
+  }
+
+  const issue = await tag.getIssues({
+
+    include:[
+      {
+        model: User,
+        attributes:['name','surname']
+      },
+      {
+        model: Project,
+        attributes:['name']
+      },
+      {
+        model: Image
+      }
+    ],
+
+    joinTableAttributes:[]
+
+  })
+
+  return res.status(200).json(issue);
+
+ }catch(err){
+  next(err); 
+ } 
+}
+
 
     static async update_image(req,res,next){ 
 

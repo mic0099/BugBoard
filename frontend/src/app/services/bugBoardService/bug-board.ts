@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Issue } from '../../models/models'
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs'; 
+import { Newcomment } from '../../interfaces/newcomment'; 
+import { issueComments } from '../../interfaces/issueComment';
 
 @Injectable({
   providedIn: 'root',
@@ -26,5 +28,17 @@ export class BugBoard {
   updateStatus(issueId: number, status: string) {
     return this.http.patch(`${this.apiUrl}/update-status`, { issueId, status });
   }
+
+  addComment(comment:Newcomment){
+    return this.http.post<issueComments>(`${this.apiUrl}/comments`,comment); 
+  }
+
+  getComment(issueId:number){
+    return this.http.get<issueComments[]>(`${this.apiUrl}/issues/${issueId}/comments`);
+  }
   
+  getImage(issueId:number){
+    return this.http.get<{url:string}>(`${this.apiUrl}/issues/${issueId}/image`)
+  }
+
 }

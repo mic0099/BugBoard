@@ -1,3 +1,5 @@
+import { issueComments } from "../interfaces/issueComment";
+
 export interface User {
     userId?: string;
     email?: string;
@@ -16,7 +18,7 @@ export interface Issue {
     priority: 'low' | 'medium' | 'high' | 'blocker';
     type: 'question' | 'bug' | 'documentation' | 'feature';
     status: 'open' | 'todo' | 'in_progress' | 'closed';
-    projectId: number;
+    projectId: number; 
     User?: User; 
     createdAt: string;
 

@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { RouterLink,Router } from '@angular/router'; 
+import { Router } from '@angular/router'; 
 import { Component, inject } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';  
@@ -10,7 +10,7 @@ import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-login',
-  imports: [RouterLink,ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
