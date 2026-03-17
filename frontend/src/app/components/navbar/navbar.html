@@ -9,7 +9,7 @@
         </a>
 
         <div class="hidden md:flex items-center gap-6 text-sm">
-            <a class="hover:text-white transition-colors cursor-pointer">Projects</a>
+            <a [routerLink]="['/projectList']"  class="hover:text-white transition-colors cursor-pointer">Projects</a>
           </div>
 
 
@@ -27,7 +27,7 @@
           </div>
   
           <div class="hidden sm:flex flex-col items-start leading-tight">
-            <span class="text-white text-sm font-semibold">{{ authService.user()?.name }} {{ authService.user()?.surname }}</span>
+            <span class="text-white text-sm font-semibold">{{ authService.user()?.name}} {{ authService.user()?.surname }}</span>
             <span class="text-gray-400 text-xs">{{ authService.isAdmin() ? 'Admin' : 'Membro' }}</span>
           </div>
   

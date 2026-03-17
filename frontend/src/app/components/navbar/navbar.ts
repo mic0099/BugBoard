@@ -3,18 +3,19 @@ import { Component, signal, HostListener } from '@angular/core';
 
 
 import { AuthService } from '../../services/authService/authService';
+import { RouterModule } from '@angular/router';
 
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })
 export class Navbar {
 
-  isMenuOpen = signal(true);
+  isMenuOpen = signal(false);
 
   constructor(
     public authService: AuthService,

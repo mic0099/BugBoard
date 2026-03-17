@@ -35,6 +35,35 @@ export class BugBoardController {
         }
 
     }
+
+  static async getAllProjects(req, res, next) {
+  try {
+    const projects = await Project.findAll({
+      attributes: [
+        'projectId', 
+        'name', 
+        'createdAt',
+        
+        [Sequelize.fn('COUNT', Sequelize.col('Issues.issueId')), 'issuesCount'] 
+      ],
+      include: [{
+        model: Issue,
+        attributes: [], 
+        required: false
+      }],
+      group: ['Project.projectId','Project.name','Project.createdAt'], 
+      order: [['name', 'ASC']],
+    });
+
+    if (!projects || projects.length === 0) {
+      return res.status(404).json({ message: 'no existing projects' });
+    }
+
+    return res.status(200).json(projects);
+  } catch (error) {
+    next(error);
+  }
+}
     
 
     static async addIssue(req,res,next) {
@@ -72,12 +101,13 @@ export class BugBoardController {
 
    try {
 
-    const {type,status,priority,sort,order} = req.query;
+    const {type,status,priority,sort,order,projectId} = req.query;
 
     const clausola = {};
     if (type) clausola.type = type;
     if (status) clausola.status = status;
     if (priority) clausola.priority = priority;
+    if (projectId) clausola.projectId = Number(projectId);
 
     const ordinamento = sort || 'createdAt';
     const tipoOrdinamento = order === 'ASC' ? 'ASC' : 'DESC';

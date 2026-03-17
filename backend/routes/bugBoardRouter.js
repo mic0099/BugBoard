@@ -13,6 +13,7 @@ import {validatorRequest} from "../validator/validateRequest.js"
 export const bugBoardRouter = Router();
 
 bugBoardRouter.post("/addProject",enforceAuth,validationRulesProject,validatorRequest,BugBoardController.addProject);
+bugBoardRouter.get("/getProjects",enforceAuth,BugBoardController.getAllProjects);
 bugBoardRouter.post("/addIssue",enforceAuth,validationRulesIssue,validatorRequest,BugBoardController.addIssue);  
 bugBoardRouter.get("/getIssues",enforceAuth,BugBoardController.getIssues); 
 bugBoardRouter.patch("/status",enforceAuth,BugBoardController.updateStatus); 

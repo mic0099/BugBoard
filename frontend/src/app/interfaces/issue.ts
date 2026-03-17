@@ -1,15 +1,4 @@
-import { issueComments } from "../interfaces/issueComment";
-
-export interface User {
-    userId?: string;
-    email?: string;
-    name: string;
-    surname: string;
-    admin?: boolean;
-  }
-
-
-
+import { User } from "./user"
 
 export interface Issue {
     issueId: number;

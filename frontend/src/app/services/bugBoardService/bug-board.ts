@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Issue } from '../../models/models'
+import { Issue } from '../../interfaces/issue'
+import { Project } from '../../interfaces/project'
 import { Observable } from 'rxjs'; 
 import { Newcomment } from '../../interfaces/newcomment'; 
 import { issueComments } from '../../interfaces/issueComment';
@@ -41,4 +42,8 @@ export class BugBoard {
     return this.http.get<{url:string}>(`${this.apiUrl}/issues/${issueId}/image`)
   }
 
+  getProjects():Observable<Project[]> {
+   return this.http.get<Project[]>(`${this.apiUrl}/getProjects`);
+
+  }
 }

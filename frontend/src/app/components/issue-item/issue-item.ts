@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, inject} from '@angular/core';
-import { Issue } from '../../models/models'
+import { Issue } from '../../interfaces/issue'
 import { CommentService } from '../../services/commentService/commentService';
 import { Router } from '@angular/router';
 

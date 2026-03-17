@@ -14,7 +14,7 @@ export function createModel(database){
                 notEmpty: true,
                 len: {
                     args: [3,50],
-                    msg: 'project name must between 3 and 10 characters long'
+                    msg: 'project name must between 3 and 50 characters long'
                 }
             }
         }

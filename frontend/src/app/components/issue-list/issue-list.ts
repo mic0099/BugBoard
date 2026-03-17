@@ -1,8 +1,9 @@
 import { HostListener,Component, OnInit } from '@angular/core';
-import { Issue } from '../../models/models'
+import { Issue } from '../../interfaces/issue'
 import { CommonModule } from '@angular/common'; 
 import { BugBoard } from '../../services/bugBoardService/bug-board'
 import { IssueItem } from '../issue-item/issue-item';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-issue-list',
@@ -26,11 +27,19 @@ export class IssueList implements OnInit {
   readonly priorities: Issue['priority'][] = ['blocker', 'high', 'medium', 'low'];
   readonly types: Issue['type'][] = ['bug', 'feature', 'question', 'documentation'];
 
-  constructor(private issueService: BugBoard) {}
+  constructor(private issueService: BugBoard, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     
-    this.loadIssue();
+    this.route.paramMap.subscribe(params => {
+      const projectId = params.get('projectId');
+  
+      if (projectId) {
+        this.loadIssue({ projectId });
+      } else {
+        this.loadIssue();
+      }
+    });
     
   }
 
