@@ -28,8 +28,18 @@ export class Navbar {
 
   get initials(): string {
     const u = this.authService.user();
+
     if (!u) return '?';
-    return (u.name[0] + u.surname[0]).toUpperCase();
+
+    const name = typeof u.name === 'string' ? u.name : '';
+    const surname = typeof u.surname === 'string' ? u.surname : '';
+
+    const first = name.charAt(0);
+    const second = surname.charAt(0);
+
+    const result = (first + second).toUpperCase();
+
+    return result || '?';
   }
 
   @HostListener('document:click')

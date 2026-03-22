@@ -11,7 +11,7 @@ const toastr = inject(ToastrService);
 
   if(!auth.isAdmin()){
      toastr.error("Access denied. Administrator privileges required.");
-     router.navigate(['/issueList']);
+     router.navigate(['/projectList']);
      return false;
   }
 

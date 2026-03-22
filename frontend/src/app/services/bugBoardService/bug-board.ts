@@ -4,7 +4,9 @@ import { Issue } from '../../interfaces/issue'
 import { Project } from '../../interfaces/project'
 import { Observable } from 'rxjs'; 
 import { Newcomment } from '../../interfaces/newcomment'; 
-import { issueComments } from '../../interfaces/issueComment';
+import { issueComments } from '../../interfaces/issueComment'; 
+import { CreateProjectRequest } from '../../interfaces/create-project-request';
+import { CreateIssueRequest } from '../../interfaces/create-issue-request';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +46,21 @@ export class BugBoard {
 
   getProjects():Observable<Project[]> {
    return this.http.get<Project[]>(`${this.apiUrl}/getProjects`);
-
+  } 
+ 
+  addProject(project:CreateProjectRequest){
+     return this.http.post<any>(`${this.apiUrl}/addProject`,project);
   }
+
+  addIssue(issue:CreateIssueRequest){
+    return this.http.post<CreateIssueRequest>(`${this.apiUrl}/addIssue`,issue);  
+  }
+
+  addImageForIssue(issueId: number, image: File) {
+    const formData = new FormData();
+    formData.append('image', image);
+
+   return this.http.post(`${this.apiUrl}/issues/${issueId}/image`, formData);
+}
+
 }

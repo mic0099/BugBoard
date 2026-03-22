@@ -1,0 +1,132 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-700 to-gray-800 p-6 md:p-10 relative">
+
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.15),transparent_55%)] pointer-events-none"></div>
+
+  <div class="relative z-10 max-w-3xl mx-auto">
+
+    <!-- HEADER -->
+    <div class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+        Nuova Issue
+      </h1>
+      <p class="text-gray-300 mt-2 text-base">
+        Crea una nuova segnalazione per il progetto selezionato.
+      </p>
+    </div>
+
+    <!-- CARD -->
+    <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl shadow-blue-950/20 p-6 md:p-8">
+
+      <form [formGroup]="issue" (ngSubmit)="onSubmit()" class="space-y-8">
+
+        <!-- TITLE -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-200 mb-2">
+            Titolo
+          </label>
+
+          <input
+            type="text"
+            formControlName="title"
+            placeholder="Inserisci titolo issue"
+            class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
+          />
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-200 mb-2">
+            Descrizione
+          </label>
+
+          <textarea
+            formControlName="description"
+            rows="4"
+            placeholder="Descrivi il problema..."
+            class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
+          ></textarea>
+        </div>
+
+        <!-- SELECT GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          <!-- PRIORITY -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">
+              Priority
+            </label>
+
+            <select
+              formControlName="priority"
+              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
+            >
+              <option value="low" class="bg-slate-800">Low</option>
+              <option value="medium" class="bg-slate-800">Medium</option>
+              <option value="high" class="bg-slate-800">High</option>
+              <option value="blocker" class="bg-slate-800">Blocker</option>
+            </select>
+          </div>
+
+          <!-- TYPE -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">
+              Type
+            </label>
+
+            <select
+              formControlName="type"
+              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
+            >
+              <option value="bug" class="bg-slate-800">Bug</option>
+              <option value="feature" class="bg-slate-800">Feature</option>
+              <option value="question" class="bg-slate-800">Question</option>
+              <option value="documentation" class="bg-slate-800">Documentation</option>
+            </select>
+          </div>
+
+          <!-- STATUS -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">
+              Status
+            </label>
+
+            <select
+              formControlName="status"
+              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
+            >
+              <option value="open" class="bg-slate-800">Open</option>
+              <option value="todo" class="bg-slate-800">Todo</option>
+              <option value="in_progress" class="bg-slate-800">In Progress</option>
+              <option value="closed" class="bg-slate-800">Closed</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- FILE upload --> 
+        <div>
+          <label class="text-gray-300 text-sm font-semibold">Immagine (opzionale)</label>
+          <input
+            type="file"
+            (change)="onFileSelected($event)"
+            class="w-full mt-1 text-gray-300"
+          />
+        </div>
+
+        <!-- BUTTON -->
+        <div class="flex justify-end pt-4">
+
+          <button
+            type="submit"
+            class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-2xl shadow-lg shadow-blue-900/30 transition-all"
+          >
+            Crea Issue
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>

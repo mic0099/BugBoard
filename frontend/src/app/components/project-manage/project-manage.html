@@ -1,0 +1,106 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-700 to-gray-800 p-6 md:p-10">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.15),transparent_55%)] pointer-events-none"></div>
+
+  <div class="relative z-10 max-w-4xl mx-auto">
+
+    <!-- HEADER -->
+    <div class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+        Nuovo Progetto
+      </h1>
+      <p class="text-gray-300 mt-2 text-base">
+        Crea un progetto e aggiungi i membri tramite email
+      </p>
+    </div>
+
+    <!-- CARD -->
+    <div class="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl shadow-blue-950/20 p-6 md:p-8">
+
+      <form [formGroup]="newProject" (ngSubmit)="onSubmit()" class="space-y-8">
+
+        <!-- NOME PROGETTO -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-200 mb-2">
+            Nome progetto
+          </label>
+
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Inserisci il nome del progetto"
+            class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
+          />
+        </div>
+
+        <!-- EMAIL -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <label class="text-sm font-semibold text-gray-200">
+              Membri progetto
+            </label>
+
+            <button
+              type="button"
+              (click)="addEmail()"
+              class="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-lg shadow-blue-900/30 transition-all"
+            >
+              + Aggiungi
+            </button>
+          </div>
+
+          <div formArrayName="emails" class="space-y-3">
+
+            <div
+              *ngFor="let emailCtrl of emails.controls; let i = index"
+              class="flex gap-3"
+            >
+              <input
+                [formControlName]="i"
+                type="email"
+                placeholder="email@esempio.com"
+                class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
+              />
+
+              <button
+                type="button"
+                (click)="removeEmail(i)"
+                class="rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-300 px-4 py-2 text-sm font-semibold transition"
+              >
+                X
+              </button>
+            </div>
+
+          </div>
+
+          <!-- stato vuoto -->
+          <div
+            *ngIf="emails.length === 0"
+            class="mt-4 text-sm text-gray-400"
+          >
+            Nessuna email aggiunta
+          </div>
+        </div>
+
+        <!-- BUTTON -->
+        <div class="flex gap-3 pt-4">
+
+          <button
+            type="submit"
+            class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-2xl shadow-lg shadow-blue-900/30 transition-all"
+          >
+            Crea progetto
+          </button>
+
+          <button
+            type="button"
+            class="bg-white/5 hover:bg-white/10 text-gray-200 font-semibold px-6 py-3 rounded-2xl border border-white/10 transition-all"
+          >
+            Annulla
+          </button>
+
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

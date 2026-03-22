@@ -7,13 +7,15 @@ import {validationRulesComment} from "../validator/ValidationRulesComment.js"
 import {validationRulesTagArr} from "../validator/validationRulesTagArr.js" 
 import {validationRulesTag} from "../validator/validationRulesTag.js" 
 import {validationRulesProject} from "../validator/validationRulesProject.js"
-import {validatorRequest} from "../validator/validateRequest.js"
+import {validatorRequest} from "../validator/validateRequest.js" 
+import {requireAdmin} from "../middleware/requireAdmin.js"
 
 
 export const bugBoardRouter = Router();
 
-bugBoardRouter.post("/addProject",enforceAuth,validationRulesProject,validatorRequest,BugBoardController.addProject);
+bugBoardRouter.post("/addProject",enforceAuth,requireAdmin,validationRulesProject,validatorRequest,BugBoardController.addProject);
 bugBoardRouter.get("/getProjects",enforceAuth,BugBoardController.getAllProjects);
+//bugBoardRouter.post("/projects/:projectId/users",enforceAuth,requireAdmin,BugBoardController.addUsersToProject);
 bugBoardRouter.post("/addIssue",enforceAuth,validationRulesIssue,validatorRequest,BugBoardController.addIssue);  
 bugBoardRouter.get("/getIssues",enforceAuth,BugBoardController.getIssues); 
 bugBoardRouter.patch("/status",enforceAuth,BugBoardController.updateStatus); 
@@ -22,4 +24,4 @@ bugBoardRouter.get('/issues/:issueId/comments',enforceAuth,BugBoardController.ge
 bugBoardRouter.get('/issues/:issueId/image',enforceAuth,BugBoardController.getImmageForIssue);
 bugBoardRouter.post("/tags",enforceAuth,validationRulesTagArr,validatorRequest,BugBoardController.createtag);
 bugBoardRouter.get("/findBytag",enforceAuth,validationRulesTag,validatorRequest,BugBoardController.findIssueByTag); 
-bugBoardRouter.post("/uploadImage",enforceAuth,upload.single('image'),BugBoardController.update_image); 
+bugBoardRouter.post("/issues/:issueId/image",enforceAuth,upload.single('image'),BugBoardController.update_image); 

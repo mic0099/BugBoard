@@ -25,10 +25,10 @@ export class IssueComments {
    url = this.commentService.url;
    issueId = this.commentService.issueId;
 
-  // === Stato locale ===
+
   newComment = false;
 
-  // === Form ===
+
   commentForm = new FormGroup({
     content: new FormControl('', [
       Validators.required,
@@ -72,7 +72,7 @@ export class IssueComments {
     });
   }
 
-  // === TrackBy per performance nel template ===
+ 
   trackByComment(index: number, comment: issueComments): number {
     return comment.commentId;
   }

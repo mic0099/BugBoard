@@ -1,9 +1,9 @@
-import { HostListener,Component, OnInit } from '@angular/core';
+import { HostListener,Component, OnInit, inject } from '@angular/core';
 import { Issue } from '../../interfaces/issue'
 import { CommonModule } from '@angular/common'; 
 import { BugBoard } from '../../services/bugBoardService/bug-board'
 import { IssueItem } from '../issue-item/issue-item';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-issue-list',
@@ -14,7 +14,11 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class IssueList implements OnInit {
 
-  issues: Issue[] = [];
+  issues: Issue[] = []; 
+  router = inject(Router);
+
+  // 🔥 AGGIUNTO
+  projectId!: number;
 
   activeStatus: string = 'all';
   selectedPriorities: string[] = [];
@@ -32,10 +36,11 @@ export class IssueList implements OnInit {
   ngOnInit(): void {
     
     this.route.paramMap.subscribe(params => {
-      const projectId = params.get('projectId');
+      const id = params.get('projectId');
   
-      if (projectId) {
-        this.loadIssue({ projectId });
+      if (id) {
+        this.projectId = Number(id);
+        this.loadIssue({ projectId: this.projectId });
       } else {
         this.loadIssue();
       }
@@ -159,6 +164,10 @@ onDocumentClick() {
 
   get currentSortLabel(): string {
     return this.sortDirection === 'asc' ? 'Più vecchi' : 'Più recenti';
+  }
+
+  addIssue(){
+    this.router.navigate([`/projects/${this.projectId}/issues/new`]); 
   }
 
 }

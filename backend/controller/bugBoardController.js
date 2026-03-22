@@ -1,70 +1,128 @@
 import { Issue } from "../models/Database.js";
 import { User } from "../models/Database.js";
 import { Project } from "../models/Database.js";
-import { Comment } from "../models/Database.js"
-import { Tag } from "../models/Database.js" 
+import { Comment } from "../models/Database.js";
+import { Tag } from "../models/Database.js";
 import { controllErr } from "../utils/controllError.js";
 import { Image } from "../models/Database.js"; 
+import { database } from "../models/Database.js"; 
 import { Sequelize } from "sequelize";
 
 export class BugBoardController {
 
 
-    static async addProject(req,res,next){
+static async addProject(req, res, next) {
+  try {
+    const { name, emails } = req.body;
 
-        try{
-
-            const {name} = req.body;
-
-            if(!name ) {
-                controllErr("missing required field", 400);
-            }
-            
-            const newProject = await Project.create({
-                name
-            });
-
-            res.status(201).json({
-                success: true,
-                message: "project created successfully",
-                newProject
-            });
-
-        }catch(error){
-            next(error);
-        }
-
+    if (!name) {
+      controllErr("missing required field: name", 400);
     }
 
-  static async getAllProjects(req, res, next) {
-  try {
-    const projects = await Project.findAll({
-      attributes: [
-        'projectId', 
-        'name', 
-        'createdAt',
+    const result = await database.transaction(async (t) => {
+
+      
+      const newProject = await Project.create(
+        { name },
+        { transaction: t }
+      );
+
+      let addedUsers = 0;
+      let notFound = [];
+
+      
+      if (emails && Array.isArray(emails) && emails.length > 0) {
+
+        const users = await User.findAll({
+          where: { email: emails },
+          transaction: t
+        });
+
         
-        [Sequelize.fn('COUNT', Sequelize.col('Issues.issueId')), 'issuesCount'] 
-      ],
-      include: [{
-        model: Issue,
-        attributes: [], 
-        required: false
-      }],
-      group: ['Project.projectId','Project.name','Project.createdAt'], 
-      order: [['name', 'ASC']],
+        const foundEmails = users.map(u => u.email);
+
+        
+        notFound = emails.filter(e => !foundEmails.includes(e));
+
+        
+        if (users.length > 0) {
+          await newProject.addUsers(users, { transaction: t });
+          addedUsers = users.length;
+        }
+      }  
     });
 
-    if (!projects || projects.length === 0) {
-      return res.status(404).json({ message: 'no existing projects' });
-    }
+    res.status(201).json({message:"project created successfully"});
 
-    return res.status(200).json(projects);
   } catch (error) {
     next(error);
   }
 }
+
+static async addUsersToProject (req,res,next) {
+  try {
+    const projectId  = req.params.projectId;
+    const emails  = req.body.emails;
+
+
+    if (!emails || !Array.isArray(emails) || emails.length === 0) {
+      controllErr("email is required",400)
+    }
+
+    const project = await Project.findByPk(projectId);
+    if (!project) {
+      controllErr("project not found",404)
+    }
+
     
+    const users = await User.findAll({
+      where: {
+        email: emails
+      }
+    });
+
+    
+    await project.addUsers(users);
+
+    return res.status(200).json({
+      message: "Users added successfully",
+    });
+
+  } catch (err) {
+    next(err); 
+  }
+}
+
+static async getAllProjects(req, res, next) {
+  try {
+    const userId = req.user.userId;
+
+    const user = await User.findByPk(userId);
+
+    const projects = await user.getProjects({
+      attributes: [
+        'projectId',
+        'name',
+        'createdAt',
+        [Sequelize.fn('COUNT', Sequelize.col('Issues.issueId')), 'issuesCount']
+      ],
+      include: [
+        {
+          model: Issue,
+          attributes: [],
+          required: false
+        }
+      ],
+      group: ['Project.projectId'],
+      order: [['name', 'ASC']]
+    });
+
+    return res.status(200).json(projects);
+
+  } catch (error) {
+    next(error);
+  }
+}    
 
     static async addIssue(req,res,next) {
        
@@ -85,7 +143,7 @@ export class BugBoardController {
                 projectId
             });
 
-            return res.status(201).json(issue);
+            return res.status(201).json({issueId: issue.issueId});
         
         }catch (error) {
 
@@ -377,16 +435,16 @@ static async findIssueByTag(req,res,next){
        controllErr("you must provide a file to upload the post",400);
      }
 
-     if(!req.body.issueId){
+     if(!req.params.issueId){
         controllErr("missing required field: issueId",400) 
      }
 
-     const issue = await Issue.findByPk(req.body.issueId); 
+     const issue = await Issue.findByPk(req.params.issueId); 
      if(!issue){
         controllErr("Issue not found",404); 
      }
 
-     const verifyIss = await Image.findOne({where:{issueId:req.body.issueId}}) 
+     const verifyIss = await Image.findOne({where:{issueId:req.params.issueId}}) 
      if(verifyIss){
         controllErr("Issue already has an associated image",409); 
      }
@@ -397,7 +455,7 @@ static async findIssueByTag(req,res,next){
             const newPost = await Image.create({
              
              url:imageUrl,
-             issueId: req.body.issueId
+             issueId: req.params.issueId
 
            });
 
