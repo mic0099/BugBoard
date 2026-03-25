@@ -52,6 +52,10 @@ export class BugBoard {
      return this.http.post<any>(`${this.apiUrl}/addProject`,project);
   }
 
+  updateProject(projectId: number, data: { name?: string, emails?: string[] }): Observable<any> {
+    return this.http.put(`${this.apiUrl}/updateProject/${projectId}`, data);
+  }
+
   addIssue(issue:CreateIssueRequest){
     return this.http.post<CreateIssueRequest>(`${this.apiUrl}/addIssue`,issue);  
   }

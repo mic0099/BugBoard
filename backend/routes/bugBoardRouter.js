@@ -15,6 +15,7 @@ export const bugBoardRouter = Router();
 
 bugBoardRouter.post("/addProject",enforceAuth,requireAdmin,validationRulesProject,validatorRequest,BugBoardController.addProject);
 bugBoardRouter.get("/getProjects",enforceAuth,BugBoardController.getAllProjects);
+bugBoardRouter.put("/updateProject/:projectId",enforceAuth,requireAdmin,BugBoardController.updateProject);
 //bugBoardRouter.post("/projects/:projectId/users",enforceAuth,requireAdmin,BugBoardController.addUsersToProject);
 bugBoardRouter.post("/addIssue",enforceAuth,validationRulesIssue,validatorRequest,BugBoardController.addIssue);  
 bugBoardRouter.get("/getIssues",enforceAuth,BugBoardController.getIssues); 

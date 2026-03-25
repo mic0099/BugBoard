@@ -96,25 +96,35 @@ static async addUsersToProject (req,res,next) {
 static async getAllProjects(req, res, next) {
   try {
     const userId = req.user.userId;
-
     const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     const projects = await user.getProjects({
       attributes: [
         'projectId',
         'name',
         'createdAt',
-        [Sequelize.fn('COUNT', Sequelize.col('Issues.issueId')), 'issuesCount']
+        [Sequelize.fn('COUNT', Sequelize.fn('DISTINCT', Sequelize.col('Issues.issueId'))), 'issuesCount']
       ],
       include: [
         {
           model: Issue,
           attributes: [],
           required: false
+        },
+        {
+          model: User,
+          attributes: ['email', 'name', 'surname'], 
+          through: { attributes: [] },
+          required: false
         }
       ],
-      group: ['Project.projectId'],
-      order: [['name', 'ASC']]
+      group: ['Project.projectId','Users.userId'],
+      order: [['name', 'ASC']],
+      subQuery: false
     });
 
     return res.status(200).json(projects);
@@ -123,6 +133,55 @@ static async getAllProjects(req, res, next) {
     next(error);
   }
 }    
+
+
+static async updateProject(req,res,next) {
+  try {
+    const { projectId } = req.params;
+    const { name, emails, removeEmails } = req.body;
+
+    const result = await database.transaction(async (t) => {
+      const project = await Project.findByPk(projectId, { transaction: t });
+
+
+      if(!project) {console.log("Nome nel DB:", project.name);
+        console.log("Nome inviato dal Frontend:", name);
+        controllErr("Missing Project", 404);
+      }
+
+      if(name) {
+        project.name = name;
+        await project.save ({ transaction: t });
+      }
+
+      if(emails && Array.isArray(emails) && emails.length > 0) {
+        const usersToAdd = await User.findAll({
+          where: {email:emails},  
+          transaction: t
+        });
+        await project.addUsers(usersToAdd, { transaction: t });
+      }
+
+      if(removeEmails && Array.isArray(removeEmails) && removeEmails.length > 0) {
+        const usersToRemove =  await User.findAll({
+          where: {email: removeEmails},
+          transaction: t
+        });
+        await project.removeUsers(usersToRemove, { transaction: t });
+      }
+      return project;
+    });
+
+    res.status(200).json({ message: "project updated succeded" });
+
+  }catch (error){
+    next(error);
+  }
+}
+
+
+
+
 
     static async addIssue(req,res,next) {
        
