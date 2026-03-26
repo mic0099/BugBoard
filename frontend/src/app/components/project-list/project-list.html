@@ -76,13 +76,26 @@
         </div>
   
         <div>
-          <label class="block text-gray-400 text-xs font-semibold uppercase mb-1.5">Aggiungi Membro (Email)</label>
-          <div class="flex gap-2">
-            <input formControlName="newEmail" type="email" 
-              class="flex-grow bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:border-blue-500/50 focus:ring-0 outline-none transition-all"
-              placeholder="email@azienda.com">
+          <label class="block text-gray-400 text-xs font-semibold uppercase mb-1.5">Aggiungi Membri</label>
+          <div class="flex gap-2 mb-3">
+            <input formControlName="newEmailInput" type="email" 
+              class="flex-grow bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:border-blue-500/50 outline-none transition-all"
+              placeholder="email@azienda.com"
+              (keyup.enter)="addEmailToList()"> <button type="button" (click)="addEmailToList()" 
+              class="bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 px-4 rounded-xl border border-blue-600/30 transition-all">
+              Aggiungi
+            </button>
           </div>
-          <p class="text-[10px] text-gray-500 mt-1 italic">* Lascia vuoto se vuoi cambiare solo il nome</p>
+        
+          <div class="flex flex-wrap gap-2 mb-4" *ngIf="emailsToAdd.length">
+            <div *ngFor="let email of emailsToAdd" 
+              class="flex items-center gap-2 bg-green-500/20 border border-green-500/30 px-3 py-1 rounded-full">
+              <span class="text-xs text-green-300">{{ email }}</span>
+              <button type="button" (click)="removeEmailFromAddList(email)" class="text-green-400 hover:text-white">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2"/></svg>
+              </button>
+            </div>
+          </div>
         </div>
   
         <div class="flex justify-end gap-3 mt-8">

@@ -10,519 +10,528 @@ import { Sequelize } from "sequelize";
 
 export class BugBoardController {
 
+  static async addProject(req, res, next) {
+    try {
+      const { name, emails } = req.body;
 
-static async addProject(req, res, next) {
-  try {
-    const { name, emails } = req.body;
+      if (!name) {
+        controllErr("missing required field: name", 400);
+      }
 
-    if (!name) {
-      controllErr("missing required field: name", 400);
+      const result = await database.transaction(async (t) => {
+
+        
+        const newProject = await Project.create(
+          { name },
+          { transaction: t }
+        );
+
+        let addedUsers = 0;
+        let notFound = [];
+
+        
+        if (emails && Array.isArray(emails) && emails.length > 0) {
+
+          const users = await User.findAll({
+            where: { email: emails },
+            transaction: t
+          });
+
+          
+          const foundEmails = users.map(u => u.email);
+
+          
+          notFound = emails.filter(e => !foundEmails.includes(e));
+
+          
+          if (users.length > 0) {
+            await newProject.addUsers(users, { transaction: t });
+            addedUsers = users.length;
+          }
+        }  
+      });
+
+      res.status(201).json({message:"project created successfully"});
+
+    } catch (error) {
+      next(error);
     }
+  }
 
-    const result = await database.transaction(async (t) => {
 
-      
-      const newProject = await Project.create(
-        { name },
-        { transaction: t }
-      );
 
-      let addedUsers = 0;
-      let notFound = [];
+  static async addUsersToProject (req,res,next) {
+    try {
+      const projectId  = req.params.projectId;
+      const emails  = req.body.emails;
 
-      
-      if (emails && Array.isArray(emails) && emails.length > 0) {
 
-        const users = await User.findAll({
-          where: { email: emails },
-          transaction: t
-        });
+      if (!emails || !Array.isArray(emails) || emails.length === 0) {
+        controllErr("email is required",400)
+      }
 
-        
-        const foundEmails = users.map(u => u.email);
+      const project = await Project.findByPk(projectId);
+      if (!project) {
+        controllErr("project not found",404)
+      }
 
-        
-        notFound = emails.filter(e => !foundEmails.includes(e));
-
-        
-        if (users.length > 0) {
-          await newProject.addUsers(users, { transaction: t });
-          addedUsers = users.length;
+      const users = await User.findAll({
+        where: {
+          email: emails
         }
-      }  
-    });
+      });
 
-    res.status(201).json({message:"project created successfully"});
+      await project.addUsers(users);
 
-  } catch (error) {
-    next(error);
+      return res.status(200).json({
+        message: "Users added successfully",
+      });
+
+    } catch (err) {
+      next(err); 
+    }
   }
-}
-
-static async addUsersToProject (req,res,next) {
-  try {
-    const projectId  = req.params.projectId;
-    const emails  = req.body.emails;
 
 
-    if (!emails || !Array.isArray(emails) || emails.length === 0) {
-      controllErr("email is required",400)
-    }
 
-    const project = await Project.findByPk(projectId);
-    if (!project) {
-      controllErr("project not found",404)
-    }
+  static async getAllProjects(req, res, next) {
+    try {
+      const userId = req.user.userId;
+      const user = await User.findByPk(userId);
 
-    
-    const users = await User.findAll({
-      where: {
-        email: emails
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
       }
-    });
 
-    
-    await project.addUsers(users);
+      const projects = await user.getProjects({
+        attributes: [
+          'projectId',
+          'name',
+          'createdAt',
+          [Sequelize.fn('COUNT', Sequelize.fn('DISTINCT', Sequelize.col('Issues.issueId'))), 'issuesCount']
+        ],
+        include: [
+          {
+            model: Issue,
+            attributes: [],
+            required: false
+          },
+          {
+            model: User,
+            attributes: ['email', 'name', 'surname'], 
+            through: { attributes: [] },
+            required: false
+          }
+        ],
+        group: ['Project.projectId','Users.userId'],
+        order: [['name', 'ASC']],
+        subQuery: false
+      });
 
-    return res.status(200).json({
-      message: "Users added successfully",
-    });
+      return res.status(200).json(projects);
 
-  } catch (err) {
-    next(err); 
-  }
-}
-
-static async getAllProjects(req, res, next) {
-  try {
-    const userId = req.user.userId;
-    const user = await User.findByPk(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    } catch (error) {
+      next(error);
     }
+  }    
 
-    const projects = await user.getProjects({
-      attributes: [
-        'projectId',
-        'name',
-        'createdAt',
-        [Sequelize.fn('COUNT', Sequelize.fn('DISTINCT', Sequelize.col('Issues.issueId'))), 'issuesCount']
-      ],
-      include: [
-        {
-          model: Issue,
-          attributes: [],
-          required: false
-        },
-        {
-          model: User,
-          attributes: ['email', 'name', 'surname'], 
-          through: { attributes: [] },
-          required: false
+
+
+  static async updateProject(req,res,next) {
+    try {
+      const { projectId } = req.params;
+      const { name, emails, removeEmails } = req.body;
+
+      const result = await database.transaction(async (t) => {
+        const project = await Project.findByPk(projectId, { transaction: t });
+
+
+        if(!project) {console.log("Nome nel DB:", project.name);
+          console.log("Nome inviato dal Frontend:", name);
+          controllErr("Missing Project", 404);
         }
-      ],
-      group: ['Project.projectId','Users.userId'],
-      order: [['name', 'ASC']],
-      subQuery: false
-    });
 
-    return res.status(200).json(projects);
+        if(name) {
+          project.name = name;
+          await project.save ({ transaction: t });
+        }
 
-  } catch (error) {
-    next(error);
-  }
-}    
+        if(emails && Array.isArray(emails) && emails.length > 0) {
+          const usersToAdd = await User.findAll({
+            where: {email:emails},  
+            transaction: t
+          });
+          await project.addUsers(usersToAdd, { transaction: t });
+        }
 
+        if(removeEmails && Array.isArray(removeEmails) && removeEmails.length > 0) {
+          const usersToRemove =  await User.findAll({
+            where: {email: removeEmails},
+            transaction: t
+          });
 
-static async updateProject(req,res,next) {
-  try {
-    const { projectId } = req.params;
-    const { name, emails, removeEmails } = req.body;
+          await project.removeUsers(usersToRemove, { transaction: t });
+        }
+        return project;
+      });
 
-    const result = await database.transaction(async (t) => {
-      const project = await Project.findByPk(projectId, { transaction: t });
+      res.status(200).json({ message: "project updated succeded" });
 
-
-      if(!project) {console.log("Nome nel DB:", project.name);
-        console.log("Nome inviato dal Frontend:", name);
-        controllErr("Missing Project", 404);
-      }
-
-      if(name) {
-        project.name = name;
-        await project.save ({ transaction: t });
-      }
-
-      if(emails && Array.isArray(emails) && emails.length > 0) {
-        const usersToAdd = await User.findAll({
-          where: {email:emails},  
-          transaction: t
-        });
-        await project.addUsers(usersToAdd, { transaction: t });
-      }
-
-      if(removeEmails && Array.isArray(removeEmails) && removeEmails.length > 0) {
-        const usersToRemove =  await User.findAll({
-          where: {email: removeEmails},
-          transaction: t
-        });
-        await project.removeUsers(usersToRemove, { transaction: t });
-      }
-      return project;
-    });
-
-    res.status(200).json({ message: "project updated succeded" });
-
-  }catch (error){
-    next(error);
-  }
-}
-
-
-
-
-
-    static async addIssue(req,res,next) {
-       
-        try{
-            const {title,description, priority, type, status, projectId } = req.body;
-        
-            if(!title || !description || !priority || !type || !status || !projectId ) {
-                controllErr("missing required fields", 400);
-            }
-
-            const issue = await Issue.create({
-                title,
-                description,
-                priority,
-                type,
-                status,
-                userId:req.user.userId,
-                projectId
-            });
-
-            return res.status(201).json({issueId: issue.issueId});
-        
-        }catch (error) {
-
-            next(error);
-
-        }    
-        
+    }catch (error){
+      next(error);
     }
+  }
+
+
+
+  static async verifyEmail(req, res, next) {
+    try {
+      const { email } = req.query;
+      const user = await User.findOne({ where: { email } });
+      
+      if (user) {
+        return res.status(200).json({ exists: true });
+      } else {
+        return res.status(404).json({ exists: false, message: "Utente non trovato" });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+
+
+  static async addIssue(req,res,next) {
+    try{
+      const {title,description, priority, type, status, projectId } = req.body;
+
+      if(!title || !description || !priority || !type || !status || !projectId ) {
+        controllErr("missing required fields", 400);
+      }
+
+      const issue = await Issue.create({
+        title,
+        description,
+        priority,
+        type,
+        status,
+        userId:req.user.userId,
+        projectId
+      });
+
+      return res.status(201).json({issueId: issue.issueId});
+    
+    }catch (error) {
+
+      next(error);
+
+    }    
+    
+  }
 
 
 
   static async getIssues(req,res,next) {
+    try {
+      const {type,status,priority,sort,order,projectId} = req.query;
 
-   try {
+      const clausola = {};
+      if (type) clausola.type = type;
+      if (status) clausola.status = status;
+      if (priority) clausola.priority = priority;
+      if (projectId) clausola.projectId = Number(projectId);
 
-    const {type,status,priority,sort,order,projectId} = req.query;
+      const ordinamento = sort || 'createdAt';
+      const tipoOrdinamento = order === 'ASC' ? 'ASC' : 'DESC';
 
-    const clausola = {};
-    if (type) clausola.type = type;
-    if (status) clausola.status = status;
-    if (priority) clausola.priority = priority;
-    if (projectId) clausola.projectId = Number(projectId);
+      const issues = await Issue.findAll({
 
-    const ordinamento = sort || 'createdAt';
-    const tipoOrdinamento = order === 'ASC' ? 'ASC' : 'DESC';
+        where: clausola,
+        order: [[ordinamento,tipoOrdinamento]],
+        include: [
+          {
+            model: User,
+            attributes: ['name','surname']
+          },
+          {
+            model: Project,
+            attributes: ['name']
+          },
+          {
+            model: Image
+          }
+        ]
+      });
 
-    const issues = await Issue.findAll({
+      res.status(200).json(issues);
 
-    where: clausola,
+    } catch(error) {
+      next(error);
+    }
+  }
 
-    order: [[ordinamento,tipoOrdinamento]],
 
-    include: [
 
-      {
-        model: User,
-        attributes: ['name','surname']
-      },
-
-      {
-        model: Project,
-        attributes: ['name']
-      },
-
-      {
-        model: Image
+  static async updateStatus(req,res,next){
+    try {
+      if(!req.body.issueId){
+        controllErr("missing required field: issueId",400);  
       }
 
-    ]
+      if(!req.body.status){
+        controllErr("missing required field: status",400)
+      }
 
-  });
+      const issueId = req.body.issueId; 
+      const status = req.body.status; 
 
-  res.status(200).json(issues);
+      const issue = await Issue.findByPk(issueId);
 
- } catch(error) {
-  next(error);
- }
+      if(!issue) {
+        controllErr("Issue not found", 400);
+      }
 
-}
+      await issue.update({status});
 
-    static async updateStatus(req,res,next){
+      res.status(200).json({
+        success: true,
+        message:`Issue status changed to  $(status)`,
+        data: issue
+      });
 
-        try {
+    }catch(error){
+      next(error);
+    }
+  }
 
-            if(!req.body.issueId){
-               controllErr("missing required field: issueId",400);  
-            }
 
-            if(!req.body.status){
-                controllErr("missing required field: status",400)
-            }
 
-            const issueId = req.body.issueId; 
-            const status = req.body.status; 
+  static async comment(req, res, next) {
+    try {
 
-            const issue = await Issue.findByPk(issueId);
+      if (!req.body.issueId) {
+        controllErr("missing required field: issueId", 400);
+      }
 
-            if(!issue) {
-                controllErr("Issue not found", 400);
-            }
+      if (!req.user.userId) {
+        controllErr("missing required field: userId", 400);
+      }
 
-            await issue.update({status});
+      if (!req.body.content) {
+        controllErr("missing required field: content", 400);
+      }
 
-            res.status(200).json({
-                success: true,
-                message:`Issue status changed to  $(status)`,
-                data: issue
-            });
-        
-        }catch(error){
-            next(error);
-        }
+      const comment = await Comment.create({
+        content: req.body.content,
+        issueId: req.body.issueId,
+        userId: req.user.userId
+      });
+
+      const result = await Comment.findByPk(comment.commentId,{
+        attributes:['commentId','content'],
+        include:[
+          {
+            model:User,
+            attributes:['name','surname']
+          }
+        ]
+      });
+
+      return res.status(201).json(result);
+
+    } catch (err) {
+      next(err);
+    }
+  }
+
+
+  static async getComments(req,res,next){
+
+  try{
+
+    if(!req.params.issueId){
+      controllErr("missing issueId",400)
     }
 
-static async comment(req, res, next) {
-  try {
+    const comments = await Comment.findAll({
 
-    if (!req.body.issueId) {
-      controllErr("missing required field: issueId", 400);
-    }
+      where:{issueId:req.params.issueId},
 
-    if (!req.user.userId) {
-      controllErr("missing required field: userId", 400);
-    }
-
-    if (!req.body.content) {
-      controllErr("missing required field: content", 400);
-    }
-
-    const comment = await Comment.create({
-      content: req.body.content,
-      issueId: req.body.issueId,
-      userId: req.user.userId
-    });
-
-    const result = await Comment.findByPk(comment.commentId,{
       attributes:['commentId','content'],
+
       include:[
         {
           model:User,
           attributes:['name','surname']
         }
-      ]
-    });
+      ],
 
-    return res.status(201).json(result);
+      order:[['createdAt','DESC']]
 
-  } catch (err) {
-    next(err);
-  }
-}
+    })
 
+    return res.status(200).json(comments)
 
-static async getComments(req,res,next){
-
- try{
-
-   if(!req.params.issueId){
-     controllErr("missing issueId",400)
-   }
-
-   const comments = await Comment.findAll({
-
-     where:{issueId:req.params.issueId},
-
-     attributes:['commentId','content'],
-
-     include:[
-       {
-         model:User,
-         attributes:['name','surname']
-       }
-     ],
-
-     order:[['createdAt','DESC']]
-
-   })
-
-   return res.status(200).json(comments)
-
- }catch(err){
-   next(err)
- }
-
-} 
-
-static async getImmageForIssue(req,res,next){
-
-     try{
-        if(!req.params.issueId){
-            controllErr('missing issue id',400); 
-        }
-
-         const image = await Image.findOne({
-          where:{issueId:req.params.issueId}, 
-          attributes:['url']
-        }); 
-
-        if(!image){
-           controllErr('image not found',404)
-        }
-
-         return res.status(200).json(image); 
-
-     }catch(err){
-        next(err);
-     }
-
-}
-
- 
-    static async createtag(req,res,next){
-    
-    try{    
-        if(!req.body.issueId){
-          controllErr('missing issueId',404) 
-        } 
- 
-        const issue = await Issue.findByPk(req.body.issueId)  
- 
-        if(!issue){
-         controllErr('issue not found',404) 
-        }
- 
-        if(!req.user.userId){
-         controllErr('missing userId',404) 
-        }
- 
-        if(issue.userId!==req.user.userId){
-         controllErr("you can't add tags a post that isn't yours",400)
-        }
- 
-        const tags=req.body.tags 
- 
-        if(tags.length===0){
-         controllErr("no tags provideds",400) 
-        }
- 
-             for(const tagContent of tags){
-               const [newtag,created] = await Tag.findOrCreate({
-                     where: {content:tagContent},
-                     defaults:{
-                         userId:req.user.userId
-                     }
-              });
-              const verifTag = await issue.hasTag(newtag);
-              if(!verifTag){
-                await issue.addTag(newtag); 
-              }
-              else{
-                 controllErr("the tag is already associated with this post",400); 
-              }
-              
-           }
-           return res.status(200).json("tag associated to the post"); 
-        }catch(err){
-            next(err); 
-        }   
- 
-    }
- 
-static async findIssueByTag(req,res,next){
- try{   
-
-  if(!req.query.content){
-    controllErr('missing tag',400)
+  }catch(err){
+    next(err)
   }
 
-  const tag = await Tag.findOne({
-    where:{content:req.query.content}
-  })
+  } 
 
-  if(!tag){
-    controllErr('tag not found',404) 
-  }
 
-  const issue = await tag.getIssues({
 
-    include:[
-      {
-        model: User,
-        attributes:['name','surname']
-      },
-      {
-        model: Project,
-        attributes:['name']
-      },
-      {
-        model: Image
+  static async getImmageForIssue(req,res,next){
+
+    try{
+      if(!req.params.issueId){
+        controllErr('missing issue id',400); 
       }
-    ],
 
-    joinTableAttributes:[]
+      const image = await Image.findOne({
+        where:{issueId:req.params.issueId}, 
+        attributes:['url']
+      }); 
 
-  })
+      if(!image){
+        controllErr('image not found',404)
+      }
 
-  return res.status(200).json(issue);
+      return res.status(200).json(image); 
 
- }catch(err){
-  next(err); 
- } 
-}
+    }catch(err){
+      next(err);
+    }
+  }
+
+  
+  static async createtag(req,res,next){
+
+    try{    
+      if(!req.body.issueId){
+        controllErr('missing issueId',404) 
+      } 
+
+      const issue = await Issue.findByPk(req.body.issueId)  
+
+      if(!issue){
+        controllErr('issue not found',404) 
+      }
+
+      if(!req.user.userId){
+        controllErr('missing userId',404) 
+      }
+
+      if(issue.userId!==req.user.userId){
+        controllErr("you can't add tags a post that isn't yours",400)
+      }
+
+      const tags=req.body.tags 
+
+      if(tags.length===0){
+        controllErr("no tags provideds",400) 
+      }
+
+      for(const tagContent of tags){
+        const [newtag,created] = await Tag.findOrCreate({
+          where: {content:tagContent},
+          defaults:{
+            userId:req.user.userId
+          }
+        });
+        const verifTag = await issue.hasTag(newtag);
+        if(!verifTag){
+          await issue.addTag(newtag); 
+        }
+        else{
+          controllErr("the tag is already associated with this post",400); 
+        }
+      }
+      return res.status(200).json("tag associated to the post"); 
+
+    }catch(err){
+      next(err); 
+    }   
+  }
+  
 
 
-    static async update_image(req,res,next){ 
+  static async findIssueByTag(req,res,next){
+  try{   
+
+    if(!req.query.content){
+      controllErr('missing tag',400)
+    }
+
+    const tag = await Tag.findOne({
+      where:{content:req.query.content}
+    })
+
+    if(!tag){
+      controllErr('tag not found',404) 
+    }
+
+    const issue = await tag.getIssues({
+
+      include:[
+        {
+          model: User,
+          attributes:['name','surname']
+        },
+        {
+          model: Project,
+          attributes:['name']
+        },
+        {
+          model: Image
+        }
+      ],
+
+      joinTableAttributes:[]
+
+    })
+
+    return res.status(200).json(issue);
+
+  }catch(err){
+    next(err); 
+  } 
+  }
+
+
+  static async update_image(req,res,next){ 
 
     try{    
       if (!req.file) {
-       controllErr("you must provide a file to upload the post",400);
-     }
+        controllErr("you must provide a file to upload the post",400);
+      }
 
-     if(!req.params.issueId){
+      if(!req.params.issueId){
         controllErr("missing required field: issueId",400) 
-     }
+      }
 
-     const issue = await Issue.findByPk(req.params.issueId); 
-     if(!issue){
+      const issue = await Issue.findByPk(req.params.issueId); 
+      if(!issue){
         controllErr("Issue not found",404); 
-     }
+      }
 
-     const verifyIss = await Image.findOne({where:{issueId:req.params.issueId}}) 
-     if(verifyIss){
+      const verifyIss = await Image.findOne({where:{issueId:req.params.issueId}}) 
+      if(verifyIss){
         controllErr("Issue already has an associated image",409); 
-     }
+      }
 
       const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`; 
       console.log(imageUrl);
-
-            const newPost = await Image.create({
-             
-             url:imageUrl,
-             issueId: req.params.issueId
-
-           });
+      
+      const newPost = await Image.create({
+        url:imageUrl,
+        issueId: req.params.issueId
+      });
 
       return res.json({newPost});
 
     }catch(err){
-        next(err) 
+      next(err) 
     }    
- }
+  }
 
 }

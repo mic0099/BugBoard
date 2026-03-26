@@ -20,6 +20,7 @@ export class ProjectList implements OnInit{
   selectedProject: Project | null = null;
   editData = {name: ''};
   newMemberEmail = '';
+  emailsToAdd: string[] = [];
   emailsToRemove: string[] = [];
 
   private fb = inject(FormBuilder);
@@ -32,7 +33,7 @@ export class ProjectList implements OnInit{
 
   editForm: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-    newEmail: ['', [Validators.email]]
+    newEmailInput: ['', [Validators.email]]
   });
 
   ngOnInit(): void {
@@ -64,7 +65,8 @@ export class ProjectList implements OnInit{
     this.isEditModalOpen = false;
     this.selectedProject = null;
     this.editForm.reset(); 
-  this.emailsToRemove = [];
+    this.emailsToRemove = [];
+    this.emailsToAdd = [];
   }
 
   toggleRemoveMember(email:string) {
@@ -80,6 +82,39 @@ export class ProjectList implements OnInit{
     return this.emailsToRemove.includes(email);
   }
 
+
+  addEmailToList() {
+    const email=this.editForm.get('newEmailInput')?.value;
+    console.log("Sto controllando l'email:", email);
+    if (!email || this.editForm.get('newEmailInput')?.invalid) {
+      this.toastr.error("Insert a valid email");
+      return;
+    }
+
+    if (this.emailsToAdd.includes(email) || 
+      this.selectedProject?.Users?.some(u => u.email === email)) {
+    this.toastr.warning("This member Already exists");
+    return;
+  }
+
+  this.projectService.checkEmailExists(email).subscribe({
+    next: (res) => {
+      console.log("Risposta server positiva:", res);
+      this.emailsToAdd.push(email);
+      this.editForm.get('newEmailInput')?.reset();
+      this.toastr.success("user found!");
+    },
+    error: (err) => {
+      console.error("Errore ricevuto dal server:", err);
+      this.toastr.error("User not found");
+    }
+  });
+  }
+
+  removeEmailFromAddList(email: string) {
+    this.emailsToAdd = this.emailsToAdd.filter(e => e !== email);
+  }
+
   saveProject() {
     if(!this.selectedProject) return;
 
@@ -87,7 +122,7 @@ export class ProjectList implements OnInit{
     const payload: any = {};
 
     if (formValues.name != this.selectedProject.name) payload.name = formValues.name;
-    if ( formValues.newEmail && formValues.newEmail.trim() !== '') payload.emails =  [formValues.newEmail];
+    if (this.emailsToAdd.length > 0) payload.emails = this.emailsToAdd;
     if (this.emailsToRemove.length>0) payload.removeEmails = this.emailsToRemove;
 
     if (Object.keys(payload).length === 0) {
@@ -100,7 +135,7 @@ export class ProjectList implements OnInit{
         this.toastr.success("Project updated successfully");
         this.loadProjects();
         this.closeModal();
-        this.emailsToRemove=[];
+        
       },
       error: (err) => alert("Error during update")
     })

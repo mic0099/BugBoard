@@ -52,6 +52,10 @@ export class BugBoard {
      return this.http.post<any>(`${this.apiUrl}/addProject`,project);
   }
 
+  checkEmailExists(email: string) {
+    return this.http.get<{exists: boolean}>(`${this.apiUrl}/verifyEmail`, { params: { email } });
+  }
+
   updateProject(projectId: number, data: { name?: string, emails?: string[] }): Observable<any> {
     return this.http.put(`${this.apiUrl}/updateProject/${projectId}`, data);
   }
