@@ -28,4 +28,10 @@ addUser(user:User){
     return this.http.post<User>(url,user,this.HttpOption); 
 }
 
+logout(){
+    const url = 'http://localhost:3000/logout'; 
+    return this.http.post<{message:string}>(url,{},this.HttpOption); 
+
+}
+
 }

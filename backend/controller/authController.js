@@ -165,4 +165,29 @@ static async loadUser(req,res,next){
   }
 }    
 
+static async logout(req,res,next){
+
+  try{ 
+   if(!req.user.userId){
+     controllErr("Authentication token is missing required claims",401); 
+   }
+
+
+      await RefreshToken.destroy({where: {userId:req.user.userId} }); 
+
+
+  res.clearCookie("refreshToken", {
+  httpOnly: true,
+  path: '/',
+  secure: false,
+  sameSite: 'lax'
+  });    
+
+  res.status(200).json({message:"Logged out successfully"});
+    
+  }catch(err){
+    next(err)
+  }
+}
+
 }

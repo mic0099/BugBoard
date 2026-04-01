@@ -16,7 +16,7 @@ export function createModel(database){
             validate: {
                 notEmpty:true,
                 len: {
-                    args: [1,10] , 
+                    args: [1,20] , 
                     msg: 'The descriptive tag must contain between 1 and 20 characters'
                 }
             }

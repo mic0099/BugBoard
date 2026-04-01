@@ -5,6 +5,7 @@ import { EMPTY, firstValueFrom, Observable } from 'rxjs';
 import {HttpClient} from '@angular/common/http'; 
 //import {environment} from '../../../environments/environment';
 import {map,tap} from 'rxjs/operators'; 
+import { AuthApiService } from '../authApiService/authApiService';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,6 @@ isAdmin = computed(() =>
 ); 
 
 private readonly LS_TOKEN_KEY='accessToken'; 
-
 
 constructor(private http: HttpClient){
      effect(() =>{ //l'effect reagisce al cambiamento del signals e ogni volta che authstate cambia esegue il codice al suo interno
@@ -168,8 +168,6 @@ refreshToken(): Observable<string>{
       map(res=>res.accessToken)
    );
 }
-
-
 
 clearAuthState(){
    localStorage.removeItem(this.LS_TOKEN_KEY); 

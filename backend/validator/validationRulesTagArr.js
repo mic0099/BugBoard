@@ -11,9 +11,9 @@ export const validationRulesTagArr=[
       return arr.every(tag=>{
           if(typeof tag !== 'string') return false; 
           const trimmed = tag.trim();
-          if (trimmed.length < 1 || trimmed.length > 10) return false;
+          if (trimmed.length < 1 || trimmed.length > 20) return false;
           return true; 
        })
    })
-   .customSanitizer(arr=>arr.map(tag=>validator.trim(tag)))
+   .customSanitizer(arr=>arr.map(tag=>validator.trim(tag).toLocaleLowerCase()))
 ]

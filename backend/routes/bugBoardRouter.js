@@ -23,6 +23,6 @@ bugBoardRouter.patch("/status",enforceAuth,BugBoardController.updateStatus);
 bugBoardRouter.post("/comments",enforceAuth,validationRulesComment,validatorRequest,BugBoardController.comment); 
 bugBoardRouter.get('/issues/:issueId/comments',enforceAuth,BugBoardController.getComments); 
 bugBoardRouter.get('/issues/:issueId/image',enforceAuth,BugBoardController.getImmageForIssue);
-bugBoardRouter.post("/tags",enforceAuth,validationRulesTagArr,validatorRequest,BugBoardController.createtag);
+bugBoardRouter.post("/issues/:issueId/tags",enforceAuth,validationRulesTagArr,validatorRequest,BugBoardController.createtag);
 bugBoardRouter.get("/findBytag",enforceAuth,validationRulesTag,validatorRequest,BugBoardController.findIssueByTag); 
 bugBoardRouter.post("/issues/:issueId/image",enforceAuth,upload.single('image'),BugBoardController.update_image); 

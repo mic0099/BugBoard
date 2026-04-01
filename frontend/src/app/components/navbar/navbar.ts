@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal, HostListener } from '@angular/core';
+import { Component, signal, HostListener, inject } from '@angular/core';
 
 
 import { AuthService } from '../../services/authService/authService';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthApiService } from '../../services/authApiService/authApiService';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -14,7 +16,9 @@ import { RouterModule } from '@angular/router';
   styleUrl: './navbar.scss',
 })
 export class Navbar {
-
+  api=inject(AuthApiService); 
+  router = inject(Router);
+  toastr=inject(ToastrService);
   isMenuOpen = signal(false);
 
   constructor(
@@ -40,7 +44,28 @@ export class Navbar {
     const result = (first + second).toUpperCase();
 
     return result || '?';
-  }
+  } 
+
+  logout(){
+  this.api.logout()
+  .subscribe({
+    next:(res) => {
+       this.toastr.success(res.message); 
+       this.authService.clearAuthState(); 
+       this.router.navigate(["/login"]); 
+    }, 
+    error:(err)=>{
+      let msg: string = "An error occurred, please try again";
+      if(err.status===0){
+      msg="Unable to connection to server. Please check your connection";
+      } 
+      this.toastr.error(msg);        
+      this.authService.clearAuthState();
+      this.router.navigate(["/login"]);
+    }
+})
+
+}
 
   @HostListener('document:click')
   closeMenu() {

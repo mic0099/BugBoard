@@ -404,54 +404,56 @@ export class BugBoardController {
   }
 
   
-  static async createtag(req,res,next){
+ static async createtag(req,res,next){
+  try{    
 
-    try{    
-      if(!req.body.issueId){
-        controllErr('missing issueId',404) 
-      } 
+    const { issueId } = req.params;
 
-      const issue = await Issue.findByPk(req.body.issueId)  
+    if(!issueId){
+      controllErr('missing issueId',400) 
+    } 
 
-      if(!issue){
-        controllErr('issue not found',404) 
-      }
+    const issue = await Issue.findByPk(issueId);
 
-      if(!req.user.userId){
-        controllErr('missing userId',404) 
-      }
+    if(!issue){
+      controllErr('issue not found',404) 
+    }
 
-      if(issue.userId!==req.user.userId){
-        controllErr("you can't add tags a post that isn't yours",400)
-      }
+    if(!req.user.userId){
+      controllErr('missing userId',401) 
+    }
 
-      const tags=req.body.tags 
+    if(issue.userId!==req.user.userId){
+      controllErr("you can't add tags to an issue that isn't yours",403)
+    }
 
-      if(tags.length===0){
-        controllErr("no tags provideds",400) 
-      }
+    const tags = req.body.tags;
 
-      for(const tagContent of tags){
-        const [newtag,created] = await Tag.findOrCreate({
-          where: {content:tagContent},
-          defaults:{
-            userId:req.user.userId
-          }
-        });
-        const verifTag = await issue.hasTag(newtag);
-        if(!verifTag){
-          await issue.addTag(newtag); 
+    if (!Array.isArray(tags) || tags.length === 0) {
+      controllErr("no tags provided",400);
+    }
+
+    for(const tagContent of tags){
+      const [newtag] = await Tag.findOrCreate({
+        where: {content:tagContent},
+        defaults:{
+          userId:req.user.userId
         }
-        else{
-          controllErr("the tag is already associated with this post",400); 
-        }
-      }
-      return res.status(200).json("tag associated to the post"); 
+      });
 
-    }catch(err){
-      next(err); 
-    }   
-  }
+      const verifTag = await issue.hasTag(newtag);
+
+      if(!verifTag){
+        await issue.addTag(newtag); 
+      }
+    }
+
+    return res.status(200).json({message:"tags associated to the post"}); 
+
+  }catch(err){
+    next(err); 
+  }   
+}
   
 
 

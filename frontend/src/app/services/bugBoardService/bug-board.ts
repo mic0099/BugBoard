@@ -69,6 +69,10 @@ export class BugBoard {
     formData.append('image', image);
 
    return this.http.post(`${this.apiUrl}/issues/${issueId}/image`, formData);
-}
+  }
+
+  addTags(issueId: number, tags: string[]){
+     return this.http.post<{message:string}>(`${this.apiUrl}/issues/${issueId}/tags`,{tags})
+  }
 
 }

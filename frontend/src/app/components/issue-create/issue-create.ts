@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { BugBoard } from '../../services/bugBoardService/bug-board';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'; 
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'; 
 import { CreateIssueRequest } from '../../interfaces/create-issue-request';
 import { catchError, EMPTY, of, switchMap } from 'rxjs'; 
 import { ActivatedRoute } from '@angular/router';
@@ -60,7 +60,8 @@ export class IssueCreate {
       Validators.required,
       Validators.pattern(/^(open|todo|in_progress|closed)$/)
     ]
-  })    
+  }),
+  tags: new FormArray<FormControl<string>>([])
 }) 
 
 ngOnInit(){
@@ -71,7 +72,25 @@ onFileSelected(event: any) {
   this.selectedFile = event.target.files[0];
 } 
 
+addtags() { 
+  this.tags.push(
+    new FormControl<string>('', {
+      nonNullable: true,
+      validators: [
+        Validators.maxLength(20)
+      ]
+    })
+  );
+}
 
+  get tags() {
+       return this.issue.get('tags') as FormArray<FormControl<string>>;
+  } 
+
+removeFile(input: HTMLInputElement) {
+  this.selectedFile = null;
+  input.value = '';
+}
 
 onSubmit(){
 
@@ -80,6 +99,8 @@ onSubmit(){
   const typeErr = this.issue.get("type")?.errors; 
   const statusErr = this.issue.get("status")?.errors; 
   const priorityErr = this.issue.get("priority")?.errors;  
+  const tagsArray = this.issue.get('tags') as FormArray;
+
 
   if(titleErr){
     this.toastr.error("Please enter a valid title"); 
@@ -106,6 +127,9 @@ onSubmit(){
     return;    
   }
 
+ const filteredTags = this.tags.controls
+  .filter(c => !c.invalid && c.value.trim() !== '')
+  .map(c => c.value.trim());
 
   const issueData: CreateIssueRequest = {
     ...this.issue.getRawValue(),
@@ -114,25 +138,37 @@ onSubmit(){
     type: this.issue.value.type as 'question' | 'bug' | 'documentation' | 'feature',
     status: this.issue.value.status as 'open' | 'todo' | 'in_progress' | 'closed'
   };
-
+ 
 
 this.api.addIssue(issueData).pipe(
 
   switchMap((res: any) => {
 
     const issueId = res.issueId || res.issue?.issueId;
-    console.log(issueId);
 
+    let tags$ = of(res);
 
-    if (!this.selectedFile) {
-      return of(res);
+    //STEP 1: TAGS (solo se presenti)
+    if (filteredTags.length > 0) {
+      tags$ = this.api.addTags(issueId, filteredTags);
     }
 
-    return this.api.addImageForIssue(issueId, this.selectedFile).pipe(
+    return tags$.pipe(
+
+      //STEP 2: IMAGE
+      switchMap(() => {
+
+        if (!this.selectedFile) {
+          return of(res);
+        }
+
+        return this.api.addImageForIssue(issueId, this.selectedFile);
+
+      }),
 
       catchError(() => {
         this.toastr.error("Something went wrong");
-        return of(res); 
+        return of(res);
       })
 
     );
