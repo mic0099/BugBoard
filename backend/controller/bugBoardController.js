@@ -464,6 +464,10 @@ export class BugBoardController {
       controllErr('missing tag',400)
     }
 
+    if(!req.query.projectId){
+      controllErr('missing projectId',400)
+    }
+
     const tag = await Tag.findOne({
       where:{content:req.query.content}
     })
@@ -473,7 +477,9 @@ export class BugBoardController {
     }
 
     const issue = await tag.getIssues({
-
+     where:{
+      projectId: Number(req.query.projectId)
+     }, 
       include:[
         {
           model: User,

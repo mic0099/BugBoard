@@ -37,7 +37,7 @@ authController.logIn(req)
     
 }); 
 
-authRouter.post("/register",enforceAuth,requireAdmin,validationRulesUser,validatorRequest,authController.creaUser);
+authRouter.post("/register",/*enforceAuth,requireAdmin,*/validationRulesUser,validatorRequest,authController.creaUser);
 authRouter.get("/refreshtoken",authController.rigToken);  
 authRouter.get("/me",enforceAuth,authController.loadUser); 
 authRouter.post("/logout",enforceAuth,authController.logout);

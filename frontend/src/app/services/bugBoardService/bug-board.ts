@@ -75,4 +75,13 @@ export class BugBoard {
      return this.http.post<{message:string}>(`${this.apiUrl}/issues/${issueId}/tags`,{tags})
   }
 
+getIssuesByTag(projectId: number, tag: string) {
+  return this.http.get<Issue[]>(`${this.apiUrl}/issues/by-tag`, {
+    params: {
+      projectId,
+      content: tag
+    }
+  });
+}
+
 }

@@ -184,6 +184,7 @@ this.api.addIssue(issueData).pipe(
 
   next: () => {
     this.toastr.success("issue created successfully");
+    this.issue.reset()
   }
 
 });

@@ -24,8 +24,9 @@ export class ProjectItem {
     this.onEdit.emit(this.project);
   }
 
-  goToIssues(projectId: number) {
-    this.router.navigate(['/issueList',projectId]); 
-  }
+goToIssues(projectId: number) {
+  this.router.navigate(['/projects', projectId, 'issues']);
+}
+
 
 }

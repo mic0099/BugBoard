@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { BugBoard } from '../../services/bugBoardService/bug-board'
 import { IssueItem } from '../issue-item/issue-item';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-issue-list',
   standalone: true,
-  imports: [CommonModule,IssueItem],
+  imports: [CommonModule,IssueItem,FormsModule],
   templateUrl: './issue-list.html',
   styleUrl: './issue-list.scss',
 })
@@ -17,14 +19,16 @@ export class IssueList implements OnInit {
   issues: Issue[] = []; 
   router = inject(Router);
 
-  // 🔥 AGGIUNTO
   projectId!: number;
 
   activeStatus: string = 'all';
   selectedPriorities: string[] = [];
   selectedTypes: string[] = [];
   sortDirection: 'asc' | 'desc' = 'desc'; 
-  openedMenu: string | null = null;
+  openedMenu: string | null = null; 
+  currentTag: string | null = null; 
+  searchTag: string = '';  
+  toastr = inject(ToastrService)
 
   filteredIssues: any[] = [];
 
@@ -33,20 +37,36 @@ export class IssueList implements OnInit {
 
   constructor(private issueService: BugBoard, private route: ActivatedRoute) {}
 
-  ngOnInit(): void {
-    
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('projectId');
-  
-      if (id) {
-        this.projectId = Number(id);
-        this.loadIssue({ projectId: this.projectId });
-      } else {
-        this.loadIssue();
-      }
-    });
-    
-  }
+
+ngOnInit(): void {
+
+  this.route.paramMap.subscribe(params => {
+
+    const id = params.get('projectId');
+    const tag = params.get('tag');
+
+    this.projectId = Number(id);
+
+    if (tag) {
+      this.currentTag = tag;
+
+      this.issues = [];           
+      this.filteredIssues = [];   
+
+      this.issueService.getIssuesByTag(this.projectId, tag)
+        .subscribe(data => {
+          this.issues = data || [];  
+          this.applyFilters(); 
+        });
+
+    } else {
+      this.currentTag = null;
+
+      this.loadIssue({ projectId: this.projectId });
+    }
+
+  });
+}
 
   loadIssue(filters?: any) {
     this.issueService.getIssues(filters).subscribe(data => {
@@ -150,10 +170,6 @@ onDocumentClick() {
   }
 
 
-
-
-
-
   // Cambia la direzione dell'ordinamento
   toggleSortDirection() {
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -169,5 +185,28 @@ onDocumentClick() {
   addIssue(){
     this.router.navigate([`/projects/${this.projectId}/issues/new`]); 
   }
+
+onTagSearch() {
+  const tag = this.searchTag.trim().toLowerCase();
+
+  if (!tag) return;
+
+  if (tag.length < 2) {
+    this.toastr.error("Tag is too short");
+    return;
+  }
+
+  if (tag.length > 20) {
+    this.toastr.error("Tag is too long");
+    return;
+  }
+
+  this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    this.router.navigate(['/projects', this.projectId, 'issues', 'tag', tag]);
+  });
+
+  this.searchTag = '';
+}
+
 
 }
