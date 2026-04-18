@@ -82,20 +82,23 @@
         </div>
 
         <!-- BUTTON -->
-        <div class="flex gap-3 pt-4">
+        <div class="flex justify-between items-center pt-4">
 
+          <!-- SINISTRA -->
+          <button
+            type="button"
+            (click)="onCancel()"
+            class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-2xl shadow-lg shadow-blue-900/30 transition-all"
+          >
+            Annulla
+          </button>
+
+          <!-- DESTRA -->
           <button
             type="submit"
             class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-2xl shadow-lg shadow-blue-900/30 transition-all"
           >
             Crea progetto
-          </button>
-
-          <button
-            type="button"
-            class="bg-white/5 hover:bg-white/10 text-gray-200 font-semibold px-6 py-3 rounded-2xl border border-white/10 transition-all"
-          >
-            Annulla
           </button>
 
         </div>

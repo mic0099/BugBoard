@@ -50,16 +50,10 @@
         <!-- SELECT GRID -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-          <!-- PRIORITY -->
           <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">
-              Priority
-            </label>
-
-            <select
-              formControlName="priority"
-              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
-            >
+            <label class="block text-sm font-semibold text-gray-200 mb-2">Priority</label>
+            <select formControlName="priority"
+              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30">
               <option value="low" class="bg-slate-800">Low</option>
               <option value="medium" class="bg-slate-800">Medium</option>
               <option value="high" class="bg-slate-800">High</option>
@@ -67,16 +61,10 @@
             </select>
           </div>
 
-          <!-- TYPE -->
           <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">
-              Type
-            </label>
-
-            <select
-              formControlName="type"
-              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
-            >
+            <label class="block text-sm font-semibold text-gray-200 mb-2">Type</label>
+            <select formControlName="type"
+              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30">
               <option value="bug" class="bg-slate-800">Bug</option>
               <option value="feature" class="bg-slate-800">Feature</option>
               <option value="question" class="bg-slate-800">Question</option>
@@ -84,16 +72,10 @@
             </select>
           </div>
 
-          <!-- STATUS -->
           <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">
-              Status
-            </label>
-
-            <select
-              formControlName="status"
-              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
-            >
+            <label class="block text-sm font-semibold text-gray-200 mb-2">Status</label>
+            <select formControlName="status"
+              class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30">
               <option value="open" class="bg-slate-800">Open</option>
               <option value="todo" class="bg-slate-800">Todo</option>
               <option value="in_progress" class="bg-slate-800">In Progress</option>
@@ -105,16 +87,11 @@
 
         <!-- TAGS -->
         <div>
-          <label class="block text-sm font-semibold text-gray-200 mb-2">
-            Tags
-          </label>
+          <label class="block text-sm font-semibold text-gray-200 mb-2">Tags</label>
 
           <div class="space-y-3">
 
-            <div
-              *ngFor="let tag of tags.controls; let i = index"
-              class="flex items-center gap-3"
-            >
+            <div *ngFor="let tag of tags.controls; let i = index" class="flex items-center gap-3">
               <input
                 type="text"
                 [formControl]="tag"
@@ -142,26 +119,14 @@
           </div>
         </div>
 
-        <!-- FILE upload -->
+        <!-- FILE -->
         <div>
           <label class="text-gray-300 text-sm font-semibold">Immagine (opzionale)</label>
 
-          <!-- input file -->
-          <input
-            #fileInput
-            type="file"
-            (change)="onFileSelected($event)"
-            class="w-full mt-1 text-gray-300"
-          />
+          <input #fileInput type="file" (change)="onFileSelected($event)" class="w-full mt-1 text-gray-300" />
 
-          <!-- preview + remove -->
-          <div
-            *ngIf="selectedFile"
-            class="mt-3 flex items-center gap-3"
-          >
-            <div
-              class="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white text-sm"
-            >
+          <div *ngIf="selectedFile" class="mt-3 flex items-center gap-3">
+            <div class="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white text-sm">
               {{ selectedFile.name }}
             </div>
 
@@ -175,14 +140,26 @@
           </div>
         </div>
 
-        <!-- BUTTON -->
-        <div class="flex justify-end pt-4">
+        <!-- BUTTONS -->
+        <div class="flex justify-between items-center pt-4">
+
+          <!-- SINISTRA -->
+          <button
+            type="button"
+            (click)="onCancel()"
+            class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-2xl shadow-lg shadow-blue-900/30 transition-all"
+          >
+            Annulla
+          </button>
+
+          <!-- DESTRA -->
           <button
             type="submit"
             class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-2xl shadow-lg shadow-blue-900/30 transition-all"
           >
             Crea Issue
           </button>
+
         </div>
 
       </form>

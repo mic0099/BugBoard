@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'; 
 import { CreateIssueRequest } from '../../interfaces/create-issue-request';
 import { catchError, EMPTY, of, switchMap } from 'rxjs'; 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-issue-create',
@@ -15,7 +15,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class IssueCreate { 
 
-  route = inject(ActivatedRoute);
+  route = inject(ActivatedRoute); 
+  router = inject(Router);
   projectId!: number;
   toastr=inject(ToastrService); 
   api=inject(BugBoard); 
@@ -189,6 +190,10 @@ this.api.addIssue(issueData).pipe(
 
 });
 
+} 
+
+onCancel(){
+  this.router.navigate(["/projectList"]);
 }
 
 }

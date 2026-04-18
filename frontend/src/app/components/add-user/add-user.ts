@@ -3,6 +3,7 @@ import { AuthApiService } from '../../services/authApiService/authApiService';
 import { ToastrService } from 'ngx-toastr'; 
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { User } from '../../interfaces/user';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-user',
@@ -13,6 +14,7 @@ import { User } from '../../interfaces/user';
 export class AddUser {
      authApi = inject(AuthApiService); 
      toastr=inject(ToastrService); 
+     router=inject(Router);
 
 userAddForm = new FormGroup({
   email: new FormControl<string>('', {
@@ -97,6 +99,12 @@ this.authApi.addUser(user)
   }   
  })
 
+} 
+
+onCancel(){
+   this.router.navigate(["/projectList"])
 }
+
+
 
 }

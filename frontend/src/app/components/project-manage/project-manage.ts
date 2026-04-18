@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BugBoard } from '../../services/bugBoardService/bug-board';
 import { CreateProjectRequest } from '../../interfaces/create-project-request';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-project-manage',
@@ -15,6 +16,7 @@ export class ProjectManage {
 
   toast = inject(ToastrService); 
   api = inject(BugBoard); 
+  router = inject(Router)
       
     newProject = new FormGroup ({
 
@@ -88,4 +90,10 @@ export class ProjectManage {
       }
      })
   } 
+
+  onCancel(){
+    this.router.navigate(["/projectList"])
+  }
+
+
 }

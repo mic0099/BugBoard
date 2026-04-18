@@ -11,12 +11,9 @@ export const authGuard: CanActivateFn = (route, state) => {
   console.log('eseguito');
 
   if (!authService.isAuthenticated()) {
-    toastr.error('Please, login to access this feature!');
     router.navigate(['/login']);
     return false;
   }
-
-  
 
   return true;
 };

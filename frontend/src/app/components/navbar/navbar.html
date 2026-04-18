@@ -9,13 +9,14 @@
         </a>
 
         <div class="hidden md:flex items-center gap-6 text-sm">
-            <a [routerLink]="['/projectList']"  class="hover:text-white transition-colors cursor-pointer">Projects</a>
+            <a *ngIf="!isInProjectList()" [routerLink]="['/projectList']"  class="hover:text-white transition-colors cursor-pointer">Projects</a>
+            <a [routerLink]="['/addUser']"  class="hover:text-white transition-colors cursor-pointer">add User</a>
+
           </div>
 
 
     </div>
 
-    
     <!-- RIGHT: User menu -->
     <div class="relative">
         <button (click)="toggleUserMenu($event)"

@@ -52,7 +52,7 @@ export class Navbar {
     next:(res) => {
        this.toastr.success(res.message); 
        this.authService.clearAuthState(); 
-       this.router.navigate(["/login"]); 
+       this.router.navigate(["/login"]);
     }, 
     error:(err)=>{
       let msg: string = "An error occurred, please try again";
@@ -70,6 +70,15 @@ export class Navbar {
   @HostListener('document:click')
   closeMenu() {
     this.isMenuOpen.set(false);
-  }
+  } 
+
+
+goToProject(){
+  this.router.navigate(["/projectList"]);
+}  
+
+isInProjectList(): boolean {
+  return this.router.url === '/projectList';
+}  
 
 }
