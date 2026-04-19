@@ -28,6 +28,11 @@ export class BugBoard {
     return this.http.get<Issue[]>(`${this.apiUrl}/getIssues`, {params});
   }
 
+ 
+getIssueById(issueId: number): Observable<Issue> {
+  return this.http.get<Issue>(`${this.apiUrl}/issues/${issueId}`);
+}
+
   updateStatus(issueId: number, status: string) {
     return this.http.patch(`${this.apiUrl}/update-status`, { issueId, status });
   }

@@ -179,7 +179,7 @@ onDocumentClick() {
 
 
   get currentSortLabel(): string {
-    return this.sortDirection === 'asc' ? 'Più vecchi' : 'Più recenti';
+    return this.sortDirection === 'asc' ? 'Least Recent' : 'Most Recent';
   }
 
   addIssue(){

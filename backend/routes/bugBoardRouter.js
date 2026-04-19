@@ -19,6 +19,7 @@ bugBoardRouter.put("/updateProject/:projectId",enforceAuth,requireAdmin,BugBoard
 bugBoardRouter.get("/verifyEmail",enforceAuth,BugBoardController.verifyEmail);
 bugBoardRouter.post("/addIssue",enforceAuth,validationRulesIssue,validatorRequest,BugBoardController.addIssue);  
 bugBoardRouter.get("/getIssues",enforceAuth,BugBoardController.getIssues); 
+bugBoardRouter.get("/issues/:id", enforceAuth,BugBoardController.getIssueById);
 bugBoardRouter.patch("/status",enforceAuth,BugBoardController.updateStatus); 
 bugBoardRouter.post("/comments",enforceAuth,validationRulesComment,validatorRequest,BugBoardController.comment); 
 bugBoardRouter.get('/issues/:issueId/comments',enforceAuth,BugBoardController.getComments); 

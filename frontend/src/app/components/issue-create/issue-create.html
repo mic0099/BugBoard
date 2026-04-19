@@ -7,10 +7,10 @@
     <!-- HEADER -->
     <div class="mb-8">
       <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-        Nuova Issue
+        New Issue
       </h1>
       <p class="text-gray-300 mt-2 text-base">
-        Crea una nuova segnalazione per il progetto selezionato.
+        Report a new issue for this project.
       </p>
     </div>
 
@@ -22,13 +22,13 @@
         <!-- TITLE -->
         <div>
           <label class="block text-sm font-semibold text-gray-200 mb-2">
-            Titolo
+            Title
           </label>
 
           <input
             type="text"
             formControlName="title"
-            placeholder="Inserisci titolo issue"
+            placeholder="Add Issue Title"
             class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
           />
         </div>
@@ -36,13 +36,13 @@
         <!-- DESCRIPTION -->
         <div>
           <label class="block text-sm font-semibold text-gray-200 mb-2">
-            Descrizione
+            Description
           </label>
 
           <textarea
             formControlName="description"
             rows="4"
-            placeholder="Descrivi il problema..."
+            placeholder="Describe the problem..."
             class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
           ></textarea>
         </div>
@@ -95,10 +95,10 @@
               <input
                 type="text"
                 [formControl]="tag"
-                placeholder="Inserisci tag"
+                placeholder="Add tag"
                 class="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
               />
-
+              Report a new issue for this project."
               <button
                 type="button"
                 (click)="tags.removeAt(i)"
@@ -113,7 +113,7 @@
               (click)="addtags()"
               class="w-full border border-dashed border-white/20 text-gray-300 py-2 rounded-2xl hover:bg-white/5 transition"
             >
-              + Aggiungi Tag
+              + Add Tag
             </button>
 
           </div>
@@ -121,7 +121,7 @@
 
         <!-- FILE -->
         <div>
-          <label class="text-gray-300 text-sm font-semibold">Immagine (opzionale)</label>
+          <label class="text-gray-300 text-sm font-semibold">Image (optional)</label>
 
           <input #fileInput type="file" (change)="onFileSelected($event)" class="w-full mt-1 text-gray-300" />
 
@@ -147,9 +147,9 @@
           <button
             type="button"
             (click)="onCancel()"
-            class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-2xl shadow-lg shadow-blue-900/30 transition-all"
+            class="px-6 py-3 rounded-xl border border-white/10 bg-white/5 text-slate-300 font-semibold hover:bg-white/10 hover:text-white hover:border-white/20 transition-all active:scale-95"
           >
-            Annulla
+            Cancel
           </button>
 
           <!-- DESTRA -->
@@ -157,7 +157,7 @@
             type="submit"
             class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-2xl shadow-lg shadow-blue-900/30 transition-all"
           >
-            Crea Issue
+            Create Issue
           </button>
 
         </div>

@@ -271,6 +271,40 @@ export class BugBoardController {
   }
 
 
+  static async getIssueById(req,res,next) {
+    try {
+      const { id } = req.params;
+  
+      const issue = await Issue.findByPk(id, {
+        include: [
+          {
+            model: User,
+            attributes: ['userId', 'name', 'surname'] 
+          },
+          {
+            model: Project,
+            attributes: ['projectId', 'name'] 
+          },
+          {
+            model: Image,
+            attributes: ['url']
+          }
+        ]
+      });
+  
+      if (!issue) {
+        return res.status(404).json({ message: "Issue not found" });
+      }
+  
+      return res.json(issue);
+    } catch (error) {
+      console.error("Error fetching issue:", error);
+      return res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+  }
+
+
+
 
   static async updateStatus(req,res,next){
     try {
@@ -393,7 +427,7 @@ export class BugBoardController {
       }); 
 
       if(!image){
-        controllErr('image not found',404)
+        return res.status(200).json({ url: null });
       }
 
       return res.status(200).json(image); 

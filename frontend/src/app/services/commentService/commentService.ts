@@ -10,7 +10,7 @@ export class CommentService {
   api = inject(BugBoard);
 
   comments = signal<issueComments[]>([]);
-  url = signal<string>('');
+  url = signal<string | null>(null);
   issueId = signal<number>(0);
 
   saveIssueAndComments(url: string, issueId: number): void {
@@ -26,10 +26,16 @@ export class CommentService {
 
   } 
 
-  loadImage(issueId:number){
-    this.api.getImage(issueId).subscribe(res => {
-      this.url.set(res.url); 
-    })
+  loadImage(issueId: number) {
+    this.api.getImage(issueId).subscribe({
+      next: (res) => {
+        this.url.set(res.url);
+      },
+      error: (err) => {
+        console.warn('No image found, fallback to null');
+        this.url.set(null)
+      }
+    });
   }
 
   clear(): void {
