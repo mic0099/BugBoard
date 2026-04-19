@@ -85,7 +85,7 @@ addtags() {
 }
 
   get tags() {
-       return this.issue.get('tags') as FormArray<FormControl<string>>;
+    return this.issue.get('tags') as FormArray<FormControl<string>>;
   } 
 
 removeFile(input: HTMLInputElement) {
@@ -183,17 +183,31 @@ this.api.addIssue(issueData).pipe(
 
 ).subscribe({
 
-  next: () => {
-    this.toastr.success("issue created successfully");
-    this.issue.reset()
-  }
-
-});
-
-} 
-
-onCancel(){
-  this.router.navigate(["/projectList"]);
+    next: () => {
+      this.toastr.success("issue created successfully");
+      const id = this.projectId;
+      setTimeout(() => {
+        if (id) {
+          this.router.navigate(['/projects', id, 'issues']);
+        } else {
+          this.router.navigate(['/projects']);
+        }
+      }, 1500);
+    }
+  })
 }
+
+onCancel() {
+  const id = this.projectId;
+  if (id) {
+    this.router.navigate(['/projects', id, 'issues']);
+  } else {
+    this.router.navigate(['/projectList']);
+  }
+}
+
+
+
+
 
 }

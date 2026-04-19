@@ -21,6 +21,7 @@ bugBoardRouter.post("/addIssue",enforceAuth,validationRulesIssue,validatorReques
 bugBoardRouter.get("/getIssues",enforceAuth,BugBoardController.getIssues); 
 bugBoardRouter.get("/issues/:id", enforceAuth,BugBoardController.getIssueById);
 bugBoardRouter.patch("/status",enforceAuth,BugBoardController.updateStatus); 
+bugBoardRouter.patch("/issue/:id/close",enforceAuth,BugBoardController.closeIssue);
 bugBoardRouter.post("/comments",enforceAuth,validationRulesComment,validatorRequest,BugBoardController.comment); 
 bugBoardRouter.get('/issues/:issueId/comments',enforceAuth,BugBoardController.getComments); 
 bugBoardRouter.get('/issues/:issueId/image',enforceAuth,BugBoardController.getImmageForIssue);

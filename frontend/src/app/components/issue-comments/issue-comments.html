@@ -64,10 +64,30 @@
         </div>
       </div>
 
+      <div class="mt-6 pt-6 border-t border-white/10" *ngIf="issue()?.status !== 'closed' && issue()?.userId === currentUserId">
+        <button 
+          (click)="closeIssue()"
+          class="w-full py-3 px-4 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 group">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Mark as Resolved
+        </button>
+      </div>
+      
+      <div class="mt-6 p-4 bg-slate-900/50 border border-emerald-500/20 rounded-xl flex items-center gap-3" *ngIf="issue()?.status === 'closed'">
+        <div class="bg-emerald-500/20 p-2 rounded-lg">
+          <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <span class="text-emerald-400 font-bold text-sm uppercase tracking-wider">Resolved</span>
+      </div>
+
     </div>
 
     <div class="lg:col-span-2 flex flex-col h-[700px] lg:h-[85vh] bg-slate-800 border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
-      
+  
       <div class="p-5 border-b border-white/5 bg-slate-800/80 backdrop-blur-md flex justify-between items-center">
         <div class="flex items-center space-x-3">
           <div class="bg-blue-500/20 p-2 rounded-lg">
@@ -79,7 +99,7 @@
           {{ comments().length }} messages
         </span>
       </div>
-
+    
       <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-slate-800 to-slate-900/50 custom-scrollbar">
         <ng-container *ngIf="comments().length > 0; else noComments">
           <div *ngFor="let c of comments(); trackBy: trackByComment" class="flex items-start space-x-4">
@@ -96,16 +116,20 @@
             </div>
           </div>
         </ng-container>
-
+    
         <ng-template #noComments>
           <div class="h-full flex flex-col items-center justify-center opacity-30">
-            <p class="italic">No messages in this thread yet.</p>
+            <p class="italic text-white">No messages in this thread yet.</p>
           </div>
         </ng-template>
       </div>
-
+    
       <div class="p-6 bg-slate-800 border-t border-white/5">
-        <form [formGroup]="commentForm" (ngSubmit)="addComment()" class="flex items-end space-x-3">
+        
+        <form *ngIf="issue()?.status !== 'closed'; else issueClosedMsg" 
+              [formGroup]="commentForm" 
+              (ngSubmit)="addComment()" 
+              class="flex items-end space-x-3">
           <div class="flex-1">
             <textarea
               formControlName="content"
@@ -122,11 +146,19 @@
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
           </button>
         </form>
+    
+        <ng-template #issueClosedMsg>
+          <div class="py-6 px-4 text-center bg-slate-900/50 rounded-2xl border border-emerald-500/20 group">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-emerald-500/10 rounded-full mb-3 text-emerald-500">
+               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <p class="text-slate-300 font-medium">This discussion is closed</p>
+            <p class="text-slate-500 text-sm mt-1">The issue has been resolved and new comments are disabled.</p>
+          </div>
+        </ng-template>
+    
       </div>
-
     </div>
-  </div>
-
 
 
 

@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { CommentService } from '../../services/commentService/commentService';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BugBoard } from '../../services/bugBoardService/bug-board';
+import { AuthService } from '../../services/authService/authService';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr'; 
 import { issueComments } from '../../interfaces/issueComment';
@@ -17,8 +18,9 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class IssueComments {
 
-  commentService = inject(CommentService) 
+  commentService = inject(CommentService) ;
   api=inject(BugBoard);
+  authService = inject(AuthService);
   toast=inject(ToastrService); 
   route=inject(ActivatedRoute); 
 
@@ -95,5 +97,25 @@ loadIssueData(id: number) {
 
   toggleModal() {
     this.isImageModalOpen.update(v => !v);
+  }
+
+  closeIssue() {
+    const id = this.issue()?.issueId;
+    if (!id) return;
+  
+  
+    this.api.closeIssue(id).subscribe({
+      next: () => {
+        this.toast.success("Issue marked as resolved");
+        this.issue.update(current => current ? { ...current, status: 'closed' } : null);
+      },
+      error: (err) => {
+        this.toast.error("Could not close the issue");
+      }
+    });
+  }
+
+  get currentUserId(): string | undefined {
+    return this.authService.user()?.id;
   }
 }

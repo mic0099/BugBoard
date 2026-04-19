@@ -80,13 +80,17 @@ getIssueById(issueId: number): Observable<Issue> {
      return this.http.post<{message:string}>(`${this.apiUrl}/issues/${issueId}/tags`,{tags})
   }
 
-getIssuesByTag(projectId: number, tag: string) {
-  return this.http.get<Issue[]>(`${this.apiUrl}/issues/by-tag`, {
-    params: {
-      projectId,
-      content: tag
-    }
-  });
-}
+  getIssuesByTag(projectId: number, tag: string) {
+    return this.http.get<Issue[]>(`${this.apiUrl}/issues/by-tag`, {
+      params: {
+        projectId,
+        content: tag
+      }
+    });
+  }
+
+  closeIssue(issueId:number) {
+    return this.http.patch(`${this.apiUrl}/issue/${issueId}/close`, { issueId});
+  }
 
 }

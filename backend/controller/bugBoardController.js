@@ -339,6 +339,41 @@ export class BugBoardController {
   }
 
 
+  static async closeIssue(req, res, next) {
+    try {
+      
+      const issue = await Issue.findByPk(req.params.id);
+      
+      
+      if (!issue) {
+        controllErr("Issue not found", 400);
+      }
+      
+      if (String(issue.userId) !== String(req.user.userId)) {
+        return res.status(403).json({ 
+          message: 'Forbidden: Only the creator can resolve this issue' 
+        });
+      }
+  
+      issue.status = 'closed';
+      await issue.save();
+      
+      return res.json({
+        message: 'Issue marked as resolved successfully',
+        issue
+      });
+  
+    } catch (error) {
+  
+      controllErr('Error closing issue:', error);
+      
+      return res.status(500).json({ 
+        message: 'Internal Server Error', 
+        error: error.message 
+      });
+    }
+  }
+
 
   static async comment(req, res, next) {
     try {
@@ -377,6 +412,7 @@ export class BugBoardController {
       next(err);
     }
   }
+
 
 
   static async getComments(req,res,next){

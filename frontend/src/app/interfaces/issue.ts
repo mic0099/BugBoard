@@ -7,6 +7,7 @@ export interface Issue {
     priority: 'low' | 'medium' | 'high' | 'blocker';
     type: 'question' | 'bug' | 'documentation' | 'feature';
     status: 'open' | 'todo' | 'in_progress' | 'closed';
+    userId: string;
     projectId: number; 
     User?: User; 
     createdAt: string;
