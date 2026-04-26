@@ -27,6 +27,6 @@ export const validationRulesIssue = [
    body("status")  
     .exists({ checkNull: true })
     .withMessage("status is required")
-    .isIn(["open", "todo", "in_progress", "closed"])
-    .withMessage("status must be one of: open, todo, in progress, closed"),
+    .isIn(["open", "todo", "in_progress"])
+    .withMessage("status must be one of: open, todo, in progress"),
 ]

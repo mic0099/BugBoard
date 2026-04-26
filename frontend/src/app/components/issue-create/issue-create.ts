@@ -59,7 +59,7 @@ export class IssueCreate {
     nonNullable: true,
     validators: [
       Validators.required,
-      Validators.pattern(/^(open|todo|in_progress|closed)$/)
+      Validators.pattern(/^(open|todo|in_progress)$/)
     ]
   }),
   tags: new FormArray<FormControl<string>>([])
@@ -137,7 +137,7 @@ onSubmit(){
     projectId: this.projectId, 
     priority: this.issue.value.priority as 'low' | 'medium' | 'high' | 'blocker',
     type: this.issue.value.type as 'question' | 'bug' | 'documentation' | 'feature',
-    status: this.issue.value.status as 'open' | 'todo' | 'in_progress' | 'closed'
+    status: this.issue.value.status as 'open' | 'todo' | 'in_progress', 
   };
  
 

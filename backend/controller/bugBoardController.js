@@ -10,54 +10,51 @@ import { Sequelize } from "sequelize";
 
 export class BugBoardController {
 
-  static async addProject(req, res, next) {
-    try {
-      const { name, emails } = req.body;
+static async addProject(req, res, next) {
+  try {
+    const { name, emails } = req.body;
 
-      if (!name) {
-        controllErr("missing required field: name", 400);
+    if (!name) {
+      controllErr("missing required field: name", 400);
+    }
+
+    await database.transaction(async (t) => {
+
+      const newProject = await Project.create(
+        { name },
+        { transaction: t }
+      );
+
+      let emailsList = Array.isArray(emails) ? [...emails] : [];
+
+      const admin = await User.findByPk(req.user.userId, { transaction: t });
+
+      if (admin) {
+        emailsList.push(admin.email);
       }
 
-      const result = await database.transaction(async (t) => {
+      emailsList = [...new Set(emailsList)];
 
-        
-        const newProject = await Project.create(
-          { name },
-          { transaction: t }
-        );
+      if (emailsList.length > 0) {
 
-        let addedUsers = 0;
-        let notFound = [];
+        const users = await User.findAll({
+          where: { email: emailsList },
+          transaction: t
+        });
 
-        
-        if (emails && Array.isArray(emails) && emails.length > 0) {
+        if (users.length > 0) {
+          await newProject.addUsers(users, { transaction: t });
+        }
+      }
 
-          const users = await User.findAll({
-            where: { email: emails },
-            transaction: t
-          });
+    });
 
-          
-          const foundEmails = users.map(u => u.email);
+    res.status(201).json({ message: "project created successfully" });
 
-          
-          notFound = emails.filter(e => !foundEmails.includes(e));
-
-          
-          if (users.length > 0) {
-            await newProject.addUsers(users, { transaction: t });
-            addedUsers = users.length;
-          }
-        }  
-      });
-
-      res.status(201).json({message:"project created successfully"});
-
-    } catch (error) {
-      next(error);
-    }
+  } catch (error) {
+    next(error);
   }
-
+}
 
 
   static async addUsersToProject (req,res,next) {
