@@ -34,7 +34,7 @@ getIssueById(issueId: number): Observable<Issue> {
 }
 
   updateStatus(issueId: number, status: string) {
-    return this.http.patch(`${this.apiUrl}/update-status`, { issueId, status });
+    return this.http.patch(`${this.apiUrl}/updateStatus`, { issueId, status });
   }
 
   addComment(comment:Newcomment){
@@ -87,10 +87,6 @@ getIssueById(issueId: number): Observable<Issue> {
         content: tag
       }
     });
-  }
-
-  closeIssue(issueId:number) {
-    return this.http.patch(`${this.apiUrl}/issue/${issueId}/close`, { issueId});
   }
 
 }

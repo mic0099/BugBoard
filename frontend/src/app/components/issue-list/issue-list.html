@@ -60,7 +60,7 @@
     <div class="flex items-center justify-start gap-4 mb-10 w-full no-scrollbar"> 
 
       <div class="flex bg-white/10 p-1 rounded-xl border border-white/10">
-        <button *ngFor="let s of ['all', 'open', 'todo', 'in_progress', 'closed']"
+        <button *ngFor="let s of ['all', 'todo', 'open', 'in_progress', 'closed']"
                 (click)="setStatusFilter(s)"
                 [ngClass]="activeStatus === s ? 'bg-white/20 text-white shadow-sm' : 'text-gray-300 hover:text-white hover:bg-white/10'"
                 class="px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all">

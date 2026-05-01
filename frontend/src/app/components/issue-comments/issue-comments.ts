@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { HostListener, Component, computed, inject, signal } from '@angular/core';
 import { CommentService } from '../../services/commentService/commentService';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BugBoard } from '../../services/bugBoardService/bug-board';
@@ -24,7 +24,14 @@ export class IssueComments {
   toast=inject(ToastrService); 
   route=inject(ActivatedRoute); 
 
+
+  @HostListener('document:click')
+  closeStatusMenu() {
+    this.statusMenuOpen.set(false);
+  }
+
   issue = signal<Issue | null>(null);
+  statusMenuOpen = signal(false);
   isImageModalOpen = signal(false);
 
   comments = computed(() => this.commentService.comments());
@@ -33,6 +40,14 @@ export class IssueComments {
 
 
   newComment = false;
+
+
+  readonly statuses: { value: Issue['status']; label: string; color: string} [] = [
+    { value: 'todo', label: 'To Do', color: '#8b5cf6' },
+    { value: 'open', label: 'Open', color: '#ef4444' },
+    { value: 'in_progress', label: 'In Progress', color: '#f59e0b' },
+    { value: 'closed', label: 'Closed', color: '#22c55e' },
+  ];
 
 
   commentForm = new FormGroup({
@@ -99,23 +114,42 @@ loadIssueData(id: number) {
     this.isImageModalOpen.update(v => !v);
   }
 
-  closeIssue() {
+  get currentStatus() {
+    return this.statuses.find(s => s.value === this.issue()?.status) ?? this.statuses[0];
+  }
+
+  toggleStatusMenu(event: MouseEvent) {
+    event.stopPropagation();
+    setTimeout(() => { this.statusMenuOpen.update(v => !v); }, 0);
+  }
+
+
+
+  changeStatus(newStatus: Issue['status']) {
     const id = this.issue()?.issueId;
     if (!id) return;
-  
-  
-    this.api.closeIssue(id).subscribe({
+    this.api.updateStatus(id, newStatus).subscribe({
       next: () => {
-        this.toast.success("Issue marked as resolved");
-        this.issue.update(current => current ? { ...current, status: 'closed' } : null);
+        this.issue.update(i => i ? { ...i, status: newStatus } : null);
+        this.statusMenuOpen.set(false);
+        this.toast.success('Status updated');
       },
-      error: (err) => {
-        this.toast.error("Could not close the issue");
-      }
+      error: () => this.toast.error('Could not update status')
     });
   }
 
-  get currentUserId(): string | undefined {
-    return this.authService.user()?.id;
+  get nextAllowedStatus(): Issue['status'] | null {
+    const transitions: Record<string, Issue['status']> = {
+      'todo': 'open',
+      'open': 'in_progress',
+      'in_progress': 'closed',
+    };
+    return transitions[this.issue()?.status ?? ''] ?? null;
   }
+
+  get isCreator(): boolean {
+    return this.authService.user()?.id === this.issue()?.userId;
+  }
+
+
 }

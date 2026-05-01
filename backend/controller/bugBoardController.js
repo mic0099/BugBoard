@@ -303,73 +303,48 @@ static async addProject(req, res, next) {
 
 
 
-  static async updateStatus(req,res,next){
+  static async updateStatus(req, res, next) {
     try {
-      if(!req.body.issueId){
-        controllErr("missing required field: issueId",400);  
-      }
-
-      if(!req.body.status){
-        controllErr("missing required field: status",400)
-      }
-
-      const issueId = req.body.issueId; 
-      const status = req.body.status; 
-
+      if (!req.body.issueId) controllErr("missing required field: issueId", 400);
+      if (!req.body.status) controllErr("missing required field: status", 400);
+  
+      const issueId = req.body.issueId;
+      const newStatus = req.body.status;
       const issue = await Issue.findByPk(issueId);
-
-      if(!issue) {
-        controllErr("Issue not found", 400);
+  
+      if (!issue) controllErr("Issue not found", 400);
+  
+      
+      if (String(issue.userId) !== String(req.user.userId)) {
+        return res.status(403).json({ message: 'Forbidden: Only the creator can change the status' });
       }
-
-      await issue.update({status});
-
-      res.status(200).json({
-        success: true,
-        message:`Issue status changed to  $(status)`,
-        data: issue
-      });
-
-    }catch(error){
+  
+     
+      if (issue.status === 'closed') {
+        return res.status(400).json({ message: 'Cannot change status of a closed issue' });
+      }
+  
+      
+      const allowedTransitions = {
+        'todo': 'open',
+        'open': 'in_progress',
+        'in_progress': 'closed',
+      };
+  
+      if (allowedTransitions[issue.status] !== newStatus) {
+        return res.status(400).json({ 
+          message: `Cannot transition from ${issue.status} to ${newStatus}` 
+        });
+      }
+  
+      await issue.update({ status: newStatus });
+      res.status(200).json({ success: true, message: `Status changed to ${newStatus}`, data: issue });
+  
+    } catch (error) {
       next(error);
     }
   }
 
-
-  static async closeIssue(req, res, next) {
-    try {
-      
-      const issue = await Issue.findByPk(req.params.id);
-      
-      
-      if (!issue) {
-        controllErr("Issue not found", 400);
-      }
-      
-      if (String(issue.userId) !== String(req.user.userId)) {
-        return res.status(403).json({ 
-          message: 'Forbidden: Only the creator can resolve this issue' 
-        });
-      }
-  
-      issue.status = 'closed';
-      await issue.save();
-      
-      return res.json({
-        message: 'Issue marked as resolved successfully',
-        issue
-      });
-  
-    } catch (error) {
-  
-      controllErr('Error closing issue:', error);
-      
-      return res.status(500).json({ 
-        message: 'Internal Server Error', 
-        error: error.message 
-      });
-    }
-  }
 
 
   static async comment(req, res, next) {
