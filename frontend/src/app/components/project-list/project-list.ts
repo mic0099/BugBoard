@@ -51,6 +51,11 @@ export class ProjectList implements OnInit{
      this.route.navigate(["/newproject"]); 
   }
 
+  newUser(){
+    this.route.navigate(["/addUser"]); 
+ }
+
+
   openEditModal(project: Project) {
     this.selectedProject = project;
     this.emailsToRemove = [];
