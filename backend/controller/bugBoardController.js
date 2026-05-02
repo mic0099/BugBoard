@@ -499,9 +499,9 @@ static async addProject(req, res, next) {
   
 
 
-  static async findIssueByTag(req,res,next){
+static async findIssueByTag(req,res,next){
   try{   
-
+    
     if(!req.query.content){
       controllErr('missing tag',400)
     }
@@ -514,14 +514,16 @@ static async addProject(req, res, next) {
       where:{content:req.query.content}
     })
 
+    console.log('Tag trovato:', tag ? tag.toJSON() : null);
+
     if(!tag){
       controllErr('tag not found',404) 
     }
 
     const issue = await tag.getIssues({
-     where:{
-      projectId: Number(req.query.projectId)
-     }, 
+      where:{
+        projectId: Number(req.query.projectId)
+      }, 
       include:[
         {
           model: User,
@@ -535,18 +537,18 @@ static async addProject(req, res, next) {
           model: Image
         }
       ],
-
       joinTableAttributes:[]
-
     })
+
+    console.log('Issue trovate:', issue.length);
 
     return res.status(200).json(issue);
 
   }catch(err){
+    console.log('ERRORE:', err);
     next(err); 
   } 
-  }
-
+}
 
   static async update_image(req,res,next){ 
 

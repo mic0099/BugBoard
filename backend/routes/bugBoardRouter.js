@@ -19,11 +19,14 @@ bugBoardRouter.put("/updateProject/:projectId",enforceAuth,requireAdmin,BugBoard
 bugBoardRouter.get("/verifyEmail",enforceAuth,BugBoardController.verifyEmail);
 bugBoardRouter.post("/addIssue",enforceAuth,validationRulesIssue,validatorRequest,BugBoardController.addIssue);  
 bugBoardRouter.get("/getIssues",enforceAuth,BugBoardController.getIssues); 
-bugBoardRouter.get("/issues/:id", enforceAuth,BugBoardController.getIssueById);
-bugBoardRouter.patch("/updateStatus",enforceAuth,BugBoardController.updateStatus); 
-bugBoardRouter.post("/comments",enforceAuth,validationRulesComment,validatorRequest,BugBoardController.comment); 
+
+bugBoardRouter.get("/issues/by-tag",enforceAuth,validationRulesTag,validatorRequest,BugBoardController.findIssueByTag); 
 bugBoardRouter.get('/issues/:issueId/comments',enforceAuth,BugBoardController.getComments); 
 bugBoardRouter.get('/issues/:issueId/image',enforceAuth,BugBoardController.getImmageForIssue);
 bugBoardRouter.post("/issues/:issueId/tags",enforceAuth,validationRulesTagArr,validatorRequest,BugBoardController.createtag);
-bugBoardRouter.get("/issues/by-tag",enforceAuth,validationRulesTag,validatorRequest,BugBoardController.findIssueByTag); 
 bugBoardRouter.post("/issues/:issueId/image",enforceAuth,upload.single('image'),BugBoardController.update_image); 
+
+bugBoardRouter.get("/issues/:id", enforceAuth,BugBoardController.getIssueById);
+
+bugBoardRouter.patch("/updateStatus",enforceAuth,BugBoardController.updateStatus); 
+bugBoardRouter.post("/comments",enforceAuth,validationRulesComment,validatorRequest,BugBoardController.comment); 

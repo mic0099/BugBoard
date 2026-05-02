@@ -186,13 +186,6 @@ this.api.addIssue(issueData).pipe(
     next: () => {
       this.toastr.success("issue created successfully");
       const id = this.projectId;
-      setTimeout(() => {
-        if (id) {
-          this.router.navigate(['/projects', id, 'issues']);
-        } else {
-          this.router.navigate(['/projects']);
-        }
-      }, 1500);
     }
   })
 }
