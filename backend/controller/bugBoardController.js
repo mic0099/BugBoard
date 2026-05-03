@@ -224,7 +224,7 @@ static async addProject(req, res, next) {
 
     }    
     
-  }
+  } 
 
 
 
@@ -514,8 +514,6 @@ static async findIssueByTag(req,res,next){
       where:{content:req.query.content}
     })
 
-    console.log('Tag trovato:', tag ? tag.toJSON() : null);
-
     if(!tag){
       controllErr('tag not found',404) 
     }
@@ -540,12 +538,9 @@ static async findIssueByTag(req,res,next){
       joinTableAttributes:[]
     })
 
-    console.log('Issue trovate:', issue.length);
-
     return res.status(200).json(issue);
 
   }catch(err){
-    console.log('ERRORE:', err);
     next(err); 
   } 
 }

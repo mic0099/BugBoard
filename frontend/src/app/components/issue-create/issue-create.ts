@@ -59,7 +59,7 @@ export class IssueCreate {
     nonNullable: true,
     validators: [
       Validators.required,
-      Validators.pattern(/^(open|todo|in_progress)$/)
+      Validators.pattern(/^(open|todo)$/)
     ]
   }),
   tags: new FormArray<FormControl<string>>([])
@@ -93,7 +93,7 @@ removeFile(input: HTMLInputElement) {
   input.value = '';
 }
 
-onSubmit(){
+onSubmit(fileInput: HTMLInputElement){
 
   const titleErr = this.issue.get("title")?.errors; 
   const descriptionErr = this.issue.get("description")?.errors; 
@@ -137,7 +137,7 @@ onSubmit(){
     projectId: this.projectId, 
     priority: this.issue.value.priority as 'low' | 'medium' | 'high' | 'blocker',
     type: this.issue.value.type as 'question' | 'bug' | 'documentation' | 'feature',
-    status: this.issue.value.status as 'open' | 'todo' | 'in_progress', 
+    status: this.issue.value.status as 'open' | 'todo', 
   };
  
 
@@ -186,6 +186,12 @@ onSubmit(){
     next: () => {
       this.toastr.success("issue created successfully");
       const id = this.projectId;
+
+      //reset campi input 
+      this.issue.reset();
+      this.selectedFile = null; 
+      fileInput.value = ''; 
+      this.tags.clear(); 
     }
   })
 }
