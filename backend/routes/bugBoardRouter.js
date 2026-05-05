@@ -6,17 +6,13 @@ import {validationRulesIssue} from "../validator/validationRulesIssue.js"
 import {validationRulesComment} from "../validator/ValidationRulesComment.js" 
 import {validationRulesTagArr} from "../validator/validationRulesTagArr.js" 
 import {validationRulesTag} from "../validator/validationRulesTag.js" 
-import {validationRulesProject} from "../validator/validationRulesProject.js"
 import {validatorRequest} from "../validator/validateRequest.js" 
 import {requireAdmin} from "../middleware/requireAdmin.js"
 
 
 export const bugBoardRouter = Router();
 
-bugBoardRouter.post("/addProject",enforceAuth,requireAdmin,validationRulesProject,validatorRequest,BugBoardController.addProject);
-bugBoardRouter.get("/getProjects",enforceAuth,BugBoardController.getAllProjects);
-bugBoardRouter.put("/updateProject/:projectId",enforceAuth,requireAdmin,BugBoardController.updateProject);
-bugBoardRouter.get("/verifyEmail",enforceAuth,BugBoardController.verifyEmail);
+
 bugBoardRouter.post("/addIssue",enforceAuth,validationRulesIssue,validatorRequest,BugBoardController.addIssue);  
 bugBoardRouter.get("/getIssues",enforceAuth,BugBoardController.getIssues); 
 
