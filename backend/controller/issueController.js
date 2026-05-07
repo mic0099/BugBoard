@@ -8,7 +8,7 @@ import { Image } from "../models/Database.js";
 import { database } from "../models/Database.js"; 
 import { Sequelize } from "sequelize";
 
-export class BugBoardController {
+export class issueController {
 
   static async addIssue(req,res,next) {
     try{
@@ -115,10 +115,10 @@ export class BugBoardController {
 
 
 
-  static async updateStatus(req, res, next) {
+  static async updateStatus(req, res, next) { //definire validator 
     try {
       if (!req.body.issueId) controllErr("missing required field: issueId", 400);
-      if (!req.body.status) controllErr("missing required field: status", 400);
+      if (!req.body.status) controllErr("missing required field: status", 400); 
   
       const issueId = req.body.issueId;
       const newStatus = req.body.status;

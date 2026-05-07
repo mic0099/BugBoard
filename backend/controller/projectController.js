@@ -8,7 +8,7 @@ import { Image } from "../models/Database.js";
 import { database } from "../models/Database.js"; 
 import { Sequelize } from "sequelize";
 
-export class projectController{
+export class projectController{ 
 
     static async addProject(req, res, next) {
       try {
@@ -55,41 +55,7 @@ export class projectController{
         next(error);
       }
     }
-    
-    
-      static async addUsersToProject (req,res,next) {
-        try {
-          const projectId  = req.params.projectId;
-          const emails  = req.body.emails;
-    
-    
-          if (!emails || !Array.isArray(emails) || emails.length === 0) {
-            controllErr("email is required",400)
-          }
-    
-          const project = await Project.findByPk(projectId);
-          if (!project) {
-            controllErr("project not found",404)
-          }
-    
-          const users = await User.findAll({
-            where: {
-              email: emails
-            }
-          });
-    
-          await project.addUsers(users);
-    
-          return res.status(200).json({
-            message: "Users added successfully",
-          });
-    
-        } catch (err) {
-          next(err); 
-        }
-      }
-    
-    
+        
     
       static async getAllProjects(req, res, next) {
         try {
@@ -134,17 +100,16 @@ export class projectController{
     
     
     
-      static async updateProject(req,res,next) {
+      static async updateProject(req,res,next) { //definire validator 
         try {
           const { projectId } = req.params;
-          const { name, emails, removeEmails } = req.body;
+          const { name, emails, removeEmails } = req.body; 
     
           const result = await database.transaction(async (t) => {
             const project = await Project.findByPk(projectId, { transaction: t });
     
     
-            if(!project) {console.log("Nome nel DB:", project.name);
-              console.log("Nome inviato dal Frontend:", name);
+            if(!project) {
               controllErr("Missing Project", 404);
             }
     
@@ -179,7 +144,7 @@ export class projectController{
         }
       }
 
-        static async verifyEmail(req, res, next) {
+        static async verifyEmail(req, res, next) { //definire validator email 
           try {
             const { email } = req.query;
             const user = await User.findOne({ where: { email } });

@@ -1,5 +1,5 @@
 import { Injectable,WritableSignal,computed,effect,inject,signal } from '@angular/core';
-import {AuthState} from './auth-state.type'
+import {AuthState} from '../../interfaces/auth-state.type'
 import {jwtDecode} from 'jwt-decode';
 import { EMPTY, firstValueFrom, Observable } from 'rxjs';
 import {HttpClient} from '@angular/common/http'; 

@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";  
 import cookieParser from "cookie-parser"; 
 import { authRouter } from "./routes/authRouter.js"; 
-import { bugBoardRouter } from "./routes/bugBoardRouter.js"; 
+import { issueRouter } from "./routes/issueRouter.js"; 
 import { database } from "./models/Database.js";
 import { projectRouter } from "./routes/projectRouter.js"
 
@@ -37,7 +37,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
  
 app.use(authRouter);
 app.use(projectRouter); 
-app.use(bugBoardRouter);
+app.use(issueRouter);
 
 
 app.use((req, res, next) => {
