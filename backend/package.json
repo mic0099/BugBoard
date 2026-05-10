@@ -2,11 +2,12 @@
   "name": "bugboard",
   "version": "1.0.0",
   "main": "index.js",
-  "type":"module",
-"scripts": {
-  "start": "node index.js",
-  "dev": "nodemon index.js"
- },
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
   "keywords": [],
   "author": "Michele Pio Loreto, Noemi Spera",
   "license": "MIT",
@@ -24,6 +25,12 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.5",
+    "@types/jest": "^30.0.0",
+    "babel-jest": "^30.4.1",
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.11",
+    "ts-jest": "^29.4.9"
   }
 }

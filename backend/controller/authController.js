@@ -55,6 +55,7 @@ export class authController{
         if(!req.body.password){
          controllErr("missing parameter password is required",400);
         } 
+        
         const lUser= await User.findOne({where:{email:req.body.email}}); 
      
         if(!lUser){
@@ -80,7 +81,7 @@ export class authController{
         const day = 7 * 24 * 60 * 1000; 
         const expiresAt = new Date(Date.now()+day);  
    
-      if(req.body.rememberMe){  
+      if(req.body.rememberMe){   
         await RefreshToken.create({
              token: refreshToken, 
              expiresAt: expiresAt,

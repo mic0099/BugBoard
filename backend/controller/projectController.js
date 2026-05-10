@@ -57,16 +57,16 @@ export class projectController{
     }
         
     
-      static async getAllProjects(req, res, next) {
+      static async getAllProjects(req, res, next) { 
         try {
           const userId = req.user.userId;
           const user = await User.findByPk(userId);
     
-          if (!user) {
-            return res.status(404).json({ message: "User not found" });
+          if (!user) { 
+            return res.status(404).json({ message: "User not found" }); 
           }
     
-          const projects = await user.getProjects({
+          const projects = await user.getProjects({ 
             attributes: [
               'projectId',
               'name',
