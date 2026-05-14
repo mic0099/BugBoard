@@ -63,7 +63,7 @@ export class projectController{
           const user = await User.findByPk(userId);
     
           if (!user) { 
-            return res.status(404).json({ message: "User not found" }); 
+             controllErr("User not found",404); 
           }
     
           const projects = await user.getProjects({ 
@@ -152,7 +152,7 @@ export class projectController{
             if (user) {
               return res.status(200).json({ exists: true });
             } else {
-              return res.status(404).json({ exists: false, message: "Utente non trovato" });
+              controllErr("User not found",404); 
             }
           } catch (error) {
             next(error);

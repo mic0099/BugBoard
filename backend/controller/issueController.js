@@ -102,13 +102,12 @@ export class issueController {
       });
   
       if (!issue) {
-        return res.status(404).json({ message: "Issue not found" });
+        controllErr("issue not found",404); 
       }
   
       return res.json(issue);
-    } catch (error) {
-      console.error("Error fetching issue:", error);
-      return res.status(500).json({ message: "Internal server error", error: error.message });
+    } catch (error) { 
+        next(error); 
     }
   }
 
@@ -122,18 +121,18 @@ export class issueController {
   
       const issueId = req.body.issueId;
       const newStatus = req.body.status;
-      const issue = await Issue.findByPk(issueId);
+      const issue = await Issue.findByPk(issueId); 
   
       if (!issue) controllErr("Issue not found", 400);
   
       
       if (String(issue.userId) !== String(req.user.userId)) {
-        return res.status(403).json({ message: 'Forbidden: Only the creator can change the status' });
+        controllErr("Forbidden: Only the creator can change the status",403); 
       }
   
      
       if (issue.status === 'closed') {
-        return res.status(400).json({ message: 'Cannot change status of a closed issue' });
+        controllErr("Cannot change status of a closed issue",400); 
       }
   
       
@@ -143,7 +142,7 @@ export class issueController {
         'in_progress': 'closed',
       };
   
-      if (allowedTransitions[issue.status] !== newStatus) {
+      if (allowedTransitions[issue.status] !== newStatus) { //verificare se si puo fare stessa cosa con controllErr
         return res.status(400).json({ 
           message: `Cannot transition from ${issue.status} to ${newStatus}` 
         });
@@ -156,83 +155,6 @@ export class issueController {
       next(error);
     }
   }
-
-
-
-  static async comment(req, res, next) {
-    try {
-
-      if (!req.body.issueId) {
-        controllErr("missing required field: issueId", 400);
-      }
-
-      if (!req.user.userId) {
-        controllErr("missing required field: userId", 400);
-      }
-
-      if (!req.body.content) {
-        controllErr("missing required field: content", 400);
-      }
-
-      const comment = await Comment.create({
-        content: req.body.content,
-        issueId: req.body.issueId,
-        userId: req.user.userId
-      });
-
-      const result = await Comment.findByPk(comment.commentId,{
-        attributes:['commentId','content'],
-        include:[
-          {
-            model:User,
-            attributes:['name','surname']
-          }
-        ]
-      });
-
-      return res.status(201).json(result);
-
-    } catch (err) {
-      next(err);
-    }
-  }
-
-
-
-  static async getComments(req,res,next){
-
-  try{
-
-    if(!req.params.issueId){
-      controllErr("missing issueId",400)
-    }
-
-    const comments = await Comment.findAll({
-
-      where:{issueId:req.params.issueId},
-
-      attributes:['commentId','content'],
-
-      include:[
-        {
-          model:User,
-          attributes:['name','surname']
-        }
-      ],
-
-      order:[['createdAt','DESC']]
-
-    })
-
-    return res.status(200).json(comments)
-
-  }catch(err){
-    next(err)
-  }
-
-  } 
-
-
 
   static async getImmageForIssue(req,res,next){
 

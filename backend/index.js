@@ -8,7 +8,8 @@ import cookieParser from "cookie-parser";
 import { authRouter } from "./routes/authRouter.js"; 
 import { issueRouter } from "./routes/issueRouter.js"; 
 import { database } from "./models/Database.js";
-import { projectRouter } from "./routes/projectRouter.js"
+import { projectRouter } from "./routes/projectRouter.js"; 
+import {commentRouter} from "./routes/commentRouter.js"; 
 
 
 
@@ -37,6 +38,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
  
 app.use(authRouter);
 app.use(projectRouter); 
+app.use(commentRouter); 
 app.use(issueRouter);
 
 
