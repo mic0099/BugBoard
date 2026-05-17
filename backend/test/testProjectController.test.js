@@ -1,4 +1,8 @@
-import { expect, jest } from '@jest/globals';
+import { expect, jest } from '@jest/globals'; 
+
+beforeEach(() => {
+    jest.clearAllMocks();
+});
 
 jest.unstable_mockModule("../models/Database.js", () => ({
 
@@ -86,11 +90,14 @@ test("should return 404 if user does not exist",async () => {
 
   await projectController.getAllProjects(req, res, next); 
 
-  expect(res.status).toHaveBeenCalledWith(404); 
+  
+  expect(next).toHaveBeenCalled();
 
-  expect(res.json).toHaveBeenCalledWith({message:"User not found"});  
+  expect(next.mock.calls[0][0].message)
+     .toBe("User not found");
 
-  expect(next).not.toHaveBeenCalled();
+   expect(next.mock.calls[0][0].status)
+     .toBe(404);
 
 
 }) 

@@ -1,5 +1,9 @@
 import { expect, jest, test } from '@jest/globals';
 
+beforeEach(() => {
+    jest.clearAllMocks();
+});
+
 jest.unstable_mockModule("../models/Database.js", () => ({
 
   User: {
