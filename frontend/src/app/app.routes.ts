@@ -6,7 +6,7 @@ import { authGuard } from './guards/auth/auth.gard';
 import { adminGuard } from './guards/adminGuard/admin-guard';
 import { IssueComments } from './components/issue-comments/issue-comments';
 import { ProjectList } from './components/project-list/project-list';
-import { ProjectManage } from './components/project-manage/project-manage';
+import { ProjectCreate } from './components/project-create/project-create';
 import { IssueCreate } from './components/issue-create/issue-create'; 
 import { guestGuard } from './guards/guestGuard/guest-guard';
 
@@ -19,7 +19,7 @@ import { guestGuard } from './guards/guestGuard/guest-guard';
     { path:'projects/:projectId/issues/tag/:tag', component:IssueList,canActivate:[authGuard]},
     { path:'addUser', component:AddUser, canActivate:[authGuard,adminGuard] },
     { path:'comments/:id', component:IssueComments, canActivate:[authGuard]},
-    { path: 'newproject', component:ProjectManage, canActivate:[authGuard,adminGuard] }, 
+    { path: 'newproject', component:ProjectCreate, canActivate:[authGuard,adminGuard] }, 
     { path: 'projects/:projectId/issues/new', component:IssueCreate, canActivate:[authGuard] }
 
     ];

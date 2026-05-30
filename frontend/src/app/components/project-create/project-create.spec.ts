@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProjectManage } from './project-manage';
+import { ProjectManage } from './project-create';
 
 describe('ProjectManage', () => {
   let component: ProjectManage;

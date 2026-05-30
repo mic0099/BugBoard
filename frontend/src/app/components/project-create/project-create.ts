@@ -7,12 +7,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-project-manage',
+  selector: 'app-project-create',
   imports: [ReactiveFormsModule,CommonModule], 
-  templateUrl: './project-manage.html',
-  styleUrl: './project-manage.scss',
+  templateUrl: './project-create.html',
+  styleUrl: './project-create.scss', 
 })
-export class ProjectManage { 
+export class ProjectCreate { 
 
   toast = inject(ToastrService); 
   api = inject(BugBoard); 
