@@ -1,0 +1,29 @@
+{
+  "cookies": [
+    {
+      "name": "refreshToken",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1MDRhZGE5Ny01ODdhLTQ1NjMtYmM1Yi02MTZmNmE4ZDFjMWYiLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNzgxMTA5NTc0LCJleHAiOjE3ODE3MTQzNzR9.miR43TgXTYtIh63argGrG07qm_sIYvoskT3ld-Gktbs",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1781714374.573403,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "http://localhost:4200",
+      "localStorage": [
+        {
+          "name": "ricordami",
+          "value": "true"
+        },
+        {
+          "name": "accessToken",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1MDRhZGE5Ny01ODdhLTQ1NjMtYmM1Yi02MTZmNmE4ZDFjMWYiLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNzgxMTA5NTc0LCJleHAiOjE3ODExMDk2MzR9.EWnXh2XSYNUngNh9z6uP5s4n5mDuYJqL7OvjcPR8TjE"
+        }
+      ]
+    }
+  ]
+}

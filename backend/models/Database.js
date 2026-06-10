@@ -60,7 +60,7 @@ User.addHook('beforeCreate',async (user)=>{
      user.password = await bcrypt.hash(user.password,salt);  
 });
 
-database.sync().then( () => { 
+database.sync().then( () => {     
   console.log("Database synced correctly");
 }).catch( err => {
   console.error("Error with database synchronization: " + err.message);

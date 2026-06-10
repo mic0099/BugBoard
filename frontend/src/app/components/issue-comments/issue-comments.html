@@ -92,9 +92,9 @@
                (click)="toggleModal()"
                class="mt-4 rounded-xl overflow-hidden border border-white/10 shadow-inner cursor-zoom-in group relative">
             <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-               <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+               <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 01114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
             </div>
-            <img [src]="url()" alt="Attachment" class="w-full h-auto object-contain bg-slate-950/50" />
+            <img data-testid="comment-issue-image" [src]="url()" alt="Attachment" class="w-full h-auto object-contain bg-slate-950/50" />
           </div>
         </div>
         
@@ -147,7 +147,9 @@
               <div class="flex items-baseline space-x-2 mb-1">
                 <span class="font-bold text-slate-100">{{ c.User.name }} {{ c.User.surname }}</span>
               </div>
-              <div class="bg-slate-700/40 border border-white/5 rounded-2xl rounded-tl-none p-4 text-slate-200 shadow-sm leading-relaxed">
+              <div
+                data-testid="comment-item"
+                class="bg-slate-700/40 border border-white/5 rounded-2xl rounded-tl-none p-4 text-slate-200 shadow-sm leading-relaxed">
                 {{ c.content }}
               </div>
             </div>
@@ -169,6 +171,7 @@
               class="flex items-end space-x-3">
           <div class="flex-1">
             <textarea
+              data-testid="comment-input"
               formControlName="content"
               rows="2"
               placeholder="Write your thoughts..."
@@ -176,6 +179,7 @@
             ></textarea>
           </div>
           <button
+            data-testid="comment-submit-button"
             type="submit"
             [disabled]="commentForm.invalid"
             class="p-4 bg-blue-600 hover:bg-blue-500 disabled:opacity-30 rounded-2xl text-white transition-all transform active:scale-95 shadow-lg shadow-blue-600/20"
@@ -210,7 +214,8 @@
   </button>
 
   <div class="relative max-w-5xl max-h-[90vh] flex items-center justify-center" (click)="$event.stopPropagation()">
-    <img [src]="url()" 
+    <img 
+        [src]="url()" 
         alt="Enlarged attachment"
         class="max-w-full max-h-[85vh] rounded-lg shadow-2xl object-contain border border-white/10 animate-in zoom-in-95 duration-300" />
   </div>
