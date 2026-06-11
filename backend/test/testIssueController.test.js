@@ -139,4 +139,46 @@ test("calls next with error when projectId is missing", async () => {
      .toBe(400);
 
 
-})
+}) 
+
+test("calls next with error 404 when tag is not found", async () => {
+
+  const req = {
+    query: {
+      content: "bug",
+      projectId: 3
+    }
+  };
+
+  const res = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn()
+  };
+
+  const next = jest.fn();
+
+  Tag.findOne.mockResolvedValue(null);
+
+  await issueController.findIssueByTag(req, res, next);
+
+  expect(Tag.findOne).toHaveBeenCalledWith({
+    where: {
+      content: "bug"
+    }
+  });
+
+  expect(mockGetIssues).not.toHaveBeenCalled();
+
+  expect(res.status).not.toHaveBeenCalled();
+
+  expect(res.json).not.toHaveBeenCalled();
+
+  expect(next).toHaveBeenCalled();
+
+  expect(next.mock.calls[0][0].message)
+    .toBe("tag not found");
+
+  expect(next.mock.calls[0][0].status)
+    .toBe(404);
+
+});
