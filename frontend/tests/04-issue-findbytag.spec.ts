@@ -14,9 +14,7 @@ test.describe('Issue Search', () => {
 
     await expect(page).toHaveURL(/projectList/);
 
-    // ==========================================
     // Creazione progetto
-    // ==========================================
 
     const createProjectResponse = page.waitForResponse(
       response =>
@@ -39,9 +37,6 @@ test.describe('Issue Search', () => {
 
     expect(projectResponse.status()).toBe(201);
 
-    await page.getByTestId('project-cancel-button')
-      .click();
-
     await expect(page).toHaveURL(/projectList/);
 
     await page.reload();
@@ -56,9 +51,7 @@ test.describe('Issue Search', () => {
 
     await expect(page).toHaveURL(/issues/);
 
-    // ==========================================
     // Creazione issue
-    // ==========================================
 
     await page.getByTestId('new-issue-button')
       .click();
@@ -99,14 +92,9 @@ test.describe('Issue Search', () => {
 
     expect(createResponse.status()).toBe(201);
 
-    await page.locator('#issue-decline-button')
-      .click();
-
     await expect(page).toHaveURL(/issues/);
 
-    // ==========================================
     // Ricerca per tag
-    // ==========================================
 
     await page.getByTestId('tag-search-input')
       .fill(tagName);

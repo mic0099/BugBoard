@@ -83,8 +83,8 @@ this.authApi.addUser(user)
  .subscribe({
   next: (data) =>{
     this.toastr.success("user created"); 
-    console.log('UTENTE CREATO:',data); 
-    this.userAddForm.reset({ admin: false });
+    this.userAddForm.reset({ admin: false }); 
+    this.router.navigate(['/projectList'],{ replaceUrl: true }); 
   }, 
 
   error: (err) => {

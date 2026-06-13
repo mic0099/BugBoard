@@ -36,26 +36,5 @@ test.describe('User Creation', () => {
       page.getByText(/user created/i)
     ).toBeVisible();
 
-    await expect(
-      page.getByTestId('user-name-input')
-    ).toHaveValue('');
-
-    await expect(
-      page.getByTestId('user-surname-input')
-    ).toHaveValue('');
-
-    await expect(
-      page.getByTestId('user-email-input')
-    ).toHaveValue('');
-
-    await expect(
-      page.getByTestId('user-password-input')
-    ).toHaveValue('');
-
-    await expect(
-      page.getByTestId('user-admin-checkbox')
-    ).not.toBeChecked();
-
-  });
-
-});
+  }); 
+})

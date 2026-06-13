@@ -187,11 +187,12 @@ onSubmit(fileInput: HTMLInputElement){
       this.toastr.success("issue created successfully");
       const id = this.projectId;
 
-      //reset campi input 
       this.issue.reset();
       this.selectedFile = null; 
       fileInput.value = ''; 
       this.tags.clear(); 
+      
+      this.router.navigate(['/projects', id, 'issues'],{replaceUrl:true}); 
     }
   })
 }

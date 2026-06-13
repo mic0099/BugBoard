@@ -6,7 +6,7 @@ test.describe('Issue Creation', () => {
 
     const issueTitle = `issue-E2E-${Date.now() % 10000}`;
     const projectTitle = `project-test-E2E${Date.now() % 10000}`;
-    const tagName = 'test-tag'; 
+    const tagName = 'test-tag';
 
     await page.goto('/projectList');
 
@@ -43,9 +43,6 @@ test.describe('Issue Creation', () => {
     expect(projectResponse.status())
       .toBe(201);
 
-    await page.getByTestId('project-cancel-button')
-      .click();
-
     await expect(page)
       .toHaveURL(/projectList/);
 
@@ -58,14 +55,16 @@ test.describe('Issue Creation', () => {
       .filter({ hasText: projectTitle })
       .click();
 
-    await expect(page).toHaveURL(/issues/);
+    await expect(page)
+      .toHaveURL(/\/projects\/\d+\/issues$/);
 
     // CREATE ISSUE
 
     await page.getByTestId('new-issue-button')
       .click();
 
-    await expect(page).toHaveURL(/issues\/new/);
+    await expect(page)
+      .toHaveURL(/issues\/new/);
 
     await page.locator('#issue-title-input')
       .fill(issueTitle);
@@ -102,12 +101,13 @@ test.describe('Issue Creation', () => {
 
     const response = await createIssueResponse;
 
-    expect(response.status()).toBe(201);
+    expect(response.status())
+      .toBe(201);
 
-    await page.locator('#issue-decline-button')
-      .click();
-
-    await expect(page).toHaveURL(/issues/);
+    await expect(page)
+      .toHaveURL(/\/projects\/\d+\/issues$/, {
+        timeout: 10000
+      });
 
     await page.reload();
 
@@ -146,7 +146,6 @@ test.describe('Issue Creation', () => {
   });
 
 });
-
 
 test.describe('Issue Creation', () => {
 
@@ -190,9 +189,6 @@ test.describe('Issue Creation', () => {
     expect(projectResponse.status())
       .toBe(201);
 
-    await page.getByTestId('project-cancel-button')
-      .click();
-
     await expect(page)
       .toHaveURL(/projectList/);
 
@@ -241,9 +237,6 @@ test.describe('Issue Creation', () => {
     const response = await createIssueResponse;
 
     expect(response.status()).toBe(201);
-
-    await page.locator('#issue-decline-button')
-      .click();
 
     await expect(page).toHaveURL(/issues/);
 

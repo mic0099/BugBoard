@@ -77,6 +77,7 @@ export class ProjectCreate {
        next: (res) => {
          this.toast.success(res.message); 
          this.newProject.reset(); 
+         this.router.navigate(['/projectList'],{ replaceUrl: true }); 
        },
       error: (err) => {
       let msg: string = "An error occurred, please try again";

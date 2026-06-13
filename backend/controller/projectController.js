@@ -10,51 +10,68 @@ import { Sequelize } from "sequelize";
 
 export class projectController{ 
 
-    static async addProject(req, res, next) {
-      try {
-        const { name, emails } = req.body;
-    
-        if (!name) {
-          controllErr("missing required field: name", 400);
-        }
-    
-        await database.transaction(async (t) => {
-    
-          const newProject = await Project.create(
-            { name },
+static async addProject(req, res, next) {
+  try {
+    const { name, emails } = req.body;
+
+    if (!name) {
+      controllErr("missing required field: name", 400);
+    }
+
+    let emailsList = [];
+    let users = [];
+
+    await database.transaction(async (t) => {
+
+      const newProject = await Project.create(
+        { name },
+        { transaction: t }
+      );
+
+      emailsList = Array.isArray(emails) ? [...emails] : [];
+
+      const admin = await User.findByPk(
+        req.user.userId,
+        { transaction: t }
+      );
+
+      if (admin) {
+        emailsList.push(admin.email);
+      }
+
+      emailsList = [...new Set(emailsList)];
+
+      if (emailsList.length > 0) {
+
+        users = await User.findAll({
+          where: { email: emailsList },
+          transaction: t
+        });
+
+        if (users.length > 0) {
+          await newProject.addUsers(
+            users,
             { transaction: t }
           );
-    
-          let emailsList = Array.isArray(emails) ? [...emails] : [];
-    
-          const admin = await User.findByPk(req.user.userId, { transaction: t });
-    
-          if (admin) {
-            emailsList.push(admin.email);
-          }
-    
-          emailsList = [...new Set(emailsList)];
-    
-          if (emailsList.length > 0) {
-    
-            const users = await User.findAll({
-              where: { email: emailsList },
-              transaction: t
-            });
-    
-            if (users.length > 0) {
-              await newProject.addUsers(users, { transaction: t });
-            }
-          }
-    
-        });
-    
-        res.status(201).json({ message: "project created successfully" });
-    
-      } catch (error) {
-        next(error);
+        }
       }
+
+    });
+
+    if (emailsList.length - users.length >= 1) {
+      res.status(201).json({
+        message: "Project created successfully. Some emails are not registered."
+      });
+    } else {
+      res.status(201).json({
+        message: "project created successfully"
+      });
     }
+
+  } catch (error) {
+    next(error);
+  }
+}
         
     
       static async getAllProjects(req, res, next) { 

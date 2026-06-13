@@ -29,8 +29,6 @@ test.describe('Project Creation', () => {
     const response = await createProjectResponse;
     expect(response.status()).toBe(201);
 
-    await page.getByTestId('project-cancel-button').click();
-
     await expect(page).toHaveURL(/projectList/);
 
     await page.reload();

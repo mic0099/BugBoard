@@ -13,11 +13,7 @@ test.describe('Comment Creation', () => {
     await page.goto('/projectList');
 
     await expect(page).toHaveURL(/projectList/);
-
-    // ==========================================
     // Creazione progetto
-    // ==========================================
-
     const createProjectResponse = page.waitForResponse(
       response =>
         response.url().includes('/addProject') &&
@@ -39,9 +35,6 @@ test.describe('Comment Creation', () => {
 
     expect(projectResponse.status()).toBe(201);
 
-    await page.getByTestId('project-cancel-button')
-      .click();
-
     await expect(page).toHaveURL(/projectList/);
 
     await page.reload();
@@ -56,9 +49,7 @@ await page.getByTestId('name-project')
 
     await expect(page).toHaveURL(/issues/);
 
-    // ==========================================
     // Creazione issue
-    // ==========================================
 
     await page.getByTestId('new-issue-button')
       .click();
@@ -97,15 +88,10 @@ await page.getByTestId('name-project')
 
     const issueId = issueBody.issueId;
 
-    await page.locator('#issue-decline-button')
-      .click();
-
     await expect(page).toHaveURL(/issues/);
 
-    // ==========================================
     // Creazione commento
-    // ==========================================
-
+    
     await page.goto(`/comments/${issueId}`);
 
     await expect(page).toHaveURL(
