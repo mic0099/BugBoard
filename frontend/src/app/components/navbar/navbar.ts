@@ -72,13 +72,4 @@ export class Navbar {
       this.isMenuOpen.set(false);
     } 
 
-
-  goToProject(){
-    this.router.navigate(["/projectList"]);
-  }  
-
-  isInProjectList(): boolean {
-    return this.router.url === '/projectList';
-  }  
-
 }
