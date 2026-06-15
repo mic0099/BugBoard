@@ -13,8 +13,8 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-issue-comments',
   imports: [CommonModule,ReactiveFormsModule],
-  templateUrl: './issue-comments.html',
-  styleUrl: './issue-comments.scss',
+  templateUrl: './issue-details.html',
+  styleUrl: './issue-details.scss',
 })
 export class IssueComments {
 
@@ -81,16 +81,14 @@ loadIssueData(id: number) {
 }
 
   addComment() {
-  const commentError = this.commentForm.get('content')?.errors; //controllo errori legati al form 
+  const commentError = this.commentForm.get('content')?.errors; 
   if (commentError) {
     this.toast.error('The comment cannot be empty and can contain a maximum of 100 characters');
     return;
   }
 
-  this.api.addComment({content:this.commentForm.get('content')?.value as string, issueId:this.issueId()}).subscribe({ //chiamata al back
-    next: (res) => {//riceve la lista di commenti 
-      // aggiorna direttamente il Signal nel service
-      console.log(res);
+  this.api.addComment({content:this.commentForm.get('content')?.value as string, issueId:this.issueId()}).subscribe({ 
+    next: (res) => {
       this.commentService.comments.update(c => [res, ...c]);
       this.newComment = true;
       this.commentForm.reset();

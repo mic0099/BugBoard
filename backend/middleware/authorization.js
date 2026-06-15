@@ -8,7 +8,7 @@ export function enforceAuth (req,res,next){
        controllErr("access denied: invalid or missing token",401); 
     }
 
-    const parts = header.split(' '); //si splitta il token 
+    const parts = header.split(' '); 
     
     if(parts.length!==2 || parts[0]!=='Bearer'){ 
       controllErr("access denied: invalid or missing token",401);
@@ -21,7 +21,7 @@ export function enforceAuth (req,res,next){
     } 
 
     authController.verifyToken(token,(err,decode)=>{ //verifico validità del token err errori generati dal token, decode token decodificato
-         if(err){ //verifico se ci sono errori 
+         if(err){ 
             controllErr("Access denied: invalid or missing token",401);
          }
          req.user={userId:decode.userId,admin:decode.admin}; //creo nuova prorietà nell'oggetto della richiesta e ci salvo lo username 

@@ -1,9 +1,7 @@
 import {Router} from "express"; 
 import {authController} from "../controller/authController.js"; 
-import {requireAdmin} from "../middleware/requireAdmin.js";
 import {enforceAuth} from "../middleware/authorization.js"; 
-import {validationRulesUser} from "../validator/validationRulesUser.js"; 
-import {validatorRequest} from "../validator/validateRequest.js"
+
 
 export const authRouter = Router(); 
 

@@ -8,8 +8,7 @@ import {createModel as CreateImageModel } from "./Image.js";
 import {createModel as CreateRefreshTokensModel } from "./RefreshToken.js"; 
 
 import bcrypt from "bcrypt"; 
-import fs from "fs";
-import path from "path"; 
+
 
 export const database = new Sequelize({
   dialect: 'sqlite',
@@ -59,6 +58,7 @@ User.addHook('beforeCreate',async (user)=>{
      const salt = await bcrypt.genSalt(10);
      user.password = await bcrypt.hash(user.password,salt);  
 });
+
 
 database.sync().then( () => {     
   console.log("Database synced correctly");

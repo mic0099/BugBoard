@@ -95,22 +95,22 @@ test("should call next with error 400 if admin is missing", async () => {
 
 test("should create user successfully",async () => { 
 
-  const req = { //mock di req da passare al metodo da testare 
+  const req = { 
     body: {
-      name: "michele",
-      surname: "loreto",
+      name: "admin",
+      surname: "test",
       email: "test@test.com", 
       password:"Test0099*", 
       admin: true
     }
   };
 
-  const res = { //mock di res da passare al metodo da testare
+  const res = { 
     json: jest.fn(),
     status: jest.fn().mockReturnThis()
   };
 
-  const next = jest.fn(); //mock di next da passare al metodo da testare 
+  const next = jest.fn(); 
 
   User.create.mockResolvedValue({
     id: 1,
@@ -120,9 +120,9 @@ test("should create user successfully",async () => {
     admin: true
   });  
 
-  await authController.creaUser(req,res,next); //chiamo il metodo e passo i parametri 
+  await authController.creaUser(req,res,next);  
 
-  expect(User.create).toHaveBeenCalledWith({ //verifico che viene effettuta chiamata a create per creazione elemento nel db 
+  expect(User.create).toHaveBeenCalledWith({ 
       name: "michele",
       surname: "loreto",
       email: "test@test.com", 
@@ -130,9 +130,9 @@ test("should create user successfully",async () => {
       admin: true    
   }); 
 
-  expect(res.status).toHaveBeenCalledWith(201); //verifico che viene chiamato metodo status  
+  expect(res.status).toHaveBeenCalledWith(201); 
 
-  expect(res.json).toHaveBeenCalledWith({ //verifico che viene chiamato metodo json
+  expect(res.json).toHaveBeenCalledWith({ 
   id: 1,
   name: "michele",
   surname: "loreto",

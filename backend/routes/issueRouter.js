@@ -6,7 +6,7 @@ import {validationRulesIssue} from "../validator/validationRulesIssue.js"
 import {validationRulesTagArr} from "../validator/validationRulesTagArr.js" 
 import {validationRulesTag} from "../validator/validationRulesTag.js" 
 import {validatorRequest} from "../validator/validateRequest.js" 
-import {requireAdmin} from "../middleware/requireAdmin.js"
+
 
 
 export const issueRouter = Router();

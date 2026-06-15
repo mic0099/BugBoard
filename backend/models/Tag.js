@@ -1,5 +1,4 @@
 import { DataTypes } from "sequelize"; 
-//gestire situazione noOnlyspace 
 
 export function createModel(database){
     database.define('Tag',{

@@ -3,21 +3,20 @@ import {AuthState} from '../../interfaces/auth-state.type'
 import {jwtDecode} from 'jwt-decode';
 import { EMPTY, firstValueFrom, Observable } from 'rxjs';
 import {HttpClient} from '@angular/common/http'; 
-//import {environment} from '../../../environments/environment';
 import {map,tap} from 'rxjs/operators'; 
-import { AuthApiService } from '../authApiService/authApiService';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-    authState: WritableSignal<AuthState> = signal<AuthState>({ //creazione singals writable authstate 
+    authState: WritableSignal<AuthState> = signal<AuthState>({ 
         user: null, 
         token: this.getToken(), 
         isAuthenticated: this.userAuthenticated(), 
     })
 
-//definisco signals derivati a partire dal siglas authstate, si aggionranro al cambiamento di authstate     
+   
 user = computed( () => this.authState().user ); 
 token = computed(()=>this.authState().token);
 isAuthenticated = computed(()=>this.authState().isAuthenticated); 
@@ -28,7 +27,7 @@ isAdmin = computed(() =>
 private readonly LS_TOKEN_KEY='accessToken'; 
 
 constructor(private http: HttpClient){
-     effect(() =>{ //l'effect reagisce al cambiamento del signals e ogni volta che authstate cambia esegue il codice al suo interno
+     effect(() =>{ 
         const token = this.authState().token; 
         const rememberMe = this.getRememberMe();
     
@@ -44,11 +43,11 @@ constructor(private http: HttpClient){
      }); 
 }
 
-getToken(){ //prende token da local o session storage 
+getToken(){ 
       return localStorage.getItem(this.LS_TOKEN_KEY) || sessionStorage.getItem(this.LS_TOKEN_KEY);
 } 
 
-getRememberMe(){ //prende val remeber da local o session 
+getRememberMe(){ 
    return localStorage.getItem('ricordami')||sessionStorage.getItem('ricordami');  
 }
 
@@ -60,7 +59,6 @@ loadUser() {
   ).pipe(
     tap(userData => {
       this.authState.update(state => {
-        // se per qualche motivo non c'è user nello state, lo ricavo dal token
         const decoded: any = jwtDecode(token);
         const userId: string | undefined = decoded?.userId;
         const role: 'USER' | 'ADMIN' = decoded?.admin === true ? 'ADMIN' : 'USER';
@@ -79,19 +77,19 @@ loadUser() {
   );
 }
 
-verifyToken(token:string|null){ //verifica la validità del token 
+verifyToken(token:string|null){ 
     
      if(token === null){return false}  
      
      try{
-       const dec:any=jwtDecode(token);  //decodifico il token 
+       const dec:any=jwtDecode(token);  
 
-        if(!dec.exp){return true;} //se exp del token è null return 
+        if(!dec.exp){return true;} 
 
-        const exp = dec.exp; //salvo data token 
-        const now = Math.floor(Date.now()/1000); //salvo data corrente 
+        const exp = dec.exp; 
+        const now = Math.floor(Date.now()/1000); 
           
-        return now <= exp; //ritorna true se token è valido false altrimenti 
+        return now <= exp;  
 
      }catch(error){ 
        return false;  
@@ -99,24 +97,24 @@ verifyToken(token:string|null){ //verifica la validità del token
     
 }
 
-userAuthenticated(){ //verifica se l'utente è autenticato  
+userAuthenticated(){  
     return this.verifyToken(this.getToken()); 
 }
 
 updateToken(token:string,throwOnError=false,loadProfile=true){
     try{
     const rememberMe = localStorage.getItem("ricordami");   
-    const decToken :any = jwtDecode(token); //decodifico token 
-    const userId = decToken.userId;  //salvo username preso dal token  
-    if(!userId){ //verifico se username è valido 
+    const decToken :any = jwtDecode(token); 
+    const userId = decToken.userId;  
+    if(!userId){ 
       if(throwOnError){
          throw new Error ("Token Malformato"); 
       }
-         this.clearAuthState(); //se non è valido cancello lo stato di autenticazione 
-         return; //termino il metodo 
+         this.clearAuthState(); 
+         return; 
     }
 
-      if(rememberMe==='true'){ //verifico remember me 
+      if(rememberMe==='true'){ 
       localStorage.setItem(this.LS_TOKEN_KEY,token); 
       }else{
       sessionStorage.setItem(this.LS_TOKEN_KEY,token);
@@ -126,7 +124,6 @@ updateToken(token:string,throwOnError=false,loadProfile=true){
      if(decToken.admin===true){
      typeRole = 'ADMIN'
      } 
-console.log("TOKEN DECODED:", decToken)
     this.authState.update(state => ({
          ...state, 
          token:token, 
@@ -150,19 +147,19 @@ console.log("TOKEN DECODED:", decToken)
        if(throwOnError){
           throw err
        }
-       this.clearAuthState(); //in caso di errore cancello statto autenticazione 
+       this.clearAuthState(); 
    }
 }
 
 refreshToken(): Observable<string>{ 
-   return this.http.get<{accessToken: string}>( //richiesta al back per rotta di refresh token 
+   return this.http.get<{accessToken: string}>( 
          'http://localhost:3000/refreshtoken',
          {
-            withCredentials:true, //per passare il token come cookie 
+            withCredentials:true,  
             responseType:'json'
          }
    ).pipe(
-      tap(res=>{ //se tutto va a buon fine carico il nuovo access token
+      tap(res=>{ 
         this.updateToken(res.accessToken);             
       }),
       map(res=>res.accessToken)
@@ -183,34 +180,33 @@ clearAuthState(){
 }
 
 
-bootstrapFromStorage():Promise<void>{ //ripristina lo stato di autenticazione (funzione che viene eseguita appena si avvia l'applicazione)
+bootstrapFromStorage():Promise<void>{ 
     return new Promise(async (resolve)=>{
   
-        const token = this.getToken(); //recupero il token 
-        const rememberMe=localStorage.getItem('ricordami')  //recupero remember me 
+        const token = this.getToken(); 
+        const rememberMe=localStorage.getItem('ricordami')  
 
-        if(!token||rememberMe==='false'){ //verifico che token è null oppure remember me false 
-          this.clearAuthState(); //ripristino lo stato 
-          return resolve(); //risolvo la promis 
+        if(!token||rememberMe==='false'){ 
+          this.clearAuthState();  
+          return resolve(); 
         }
 
-        if(this.verifyToken(token)){ //verifico la validità del token 
-          this.updateToken(token,false,false);//se valido aggiorno lo stato 
+        if(this.verifyToken(token)){ 
+          this.updateToken(token,false,false); 
           try{
             await firstValueFrom(this.loadUser()); 
-            console.log("BOOTSTRAP → PROFILE LOADED");
           }catch(err){
             this.clearAuthState(); 
           }
-          return resolve();  //risolvo la promis 
+          return resolve();   
         }
 
-        this.refreshToken().subscribe({ //se token non vaido tento refresh 
+        this.refreshToken().subscribe({  
          next: ()=>{
             resolve(); 
          }, 
          error:()=>{
-             this.clearAuthState(); //in caso di errore rimuovo lo stato 
+             this.clearAuthState(); 
              resolve(); 
          } 
         })

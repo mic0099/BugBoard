@@ -65,20 +65,20 @@ export class Navbar {
     }
 })
 
-}
+  }
 
-  @HostListener('document:click')
-  closeMenu() {
-    this.isMenuOpen.set(false);
-  } 
+    @HostListener('document:click')
+    closeMenu() {
+      this.isMenuOpen.set(false);
+    } 
 
 
-goToProject(){
-  this.router.navigate(["/projectList"]);
-}  
+  goToProject(){
+    this.router.navigate(["/projectList"]);
+  }  
 
-isInProjectList(): boolean {
-  return this.router.url === '/projectList';
-}  
+  isInProjectList(): boolean {
+    return this.router.url === '/projectList';
+  }  
 
 }

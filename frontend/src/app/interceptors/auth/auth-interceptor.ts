@@ -1,4 +1,3 @@
-// auth.interceptor.ts
 import { HttpInterceptorFn, HttpErrorResponse, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../../services/authService/authService';
@@ -8,58 +7,58 @@ import { catchError, switchMap, throwError, finalize, shareReplay } from 'rxjs';
 const PUBLIC_URLS: string[] = ['/login','/refreshtoken'];
 
 function isPublic(req: HttpRequest<unknown>) {
-  return PUBLIC_URLS.some(u => req.url.includes(u)); //ritorna true se l'url della richiesta contiene gli url specificati 
+  return PUBLIC_URLS.some(u => req.url.includes(u)); 
 }
 
 function withAuth(req: HttpRequest<unknown>, token: string) {
-  return req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }); //creo una nuova richiesta con header specificato
+  return req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }); 
 }
 
-let refreshObs: ReturnType<AuthService['refreshToken']> | null = null; //serve per evitare chiamate multiple È una variabile che memorizza la chiamata di refresh token “attiva”, per evitare di rifarla più volte in contemporanea.
+let refreshObs: ReturnType<AuthService['refreshToken']> | null = null; 
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  if (isPublic(req)) { //verifico se l'url attuale fa riferimento ad una rotta publica 
+  if (isPublic(req)) {  
     return next(req);
   }
 
-  const token = auth.getToken(); //recpero access token
+  const token = auth.getToken(); 
   const authedReq = token ? withAuth(req, token) : req;
 
-  return next(authedReq).pipe( //invio la richiesta 
-    catchError((err: unknown) => { //se viene generato errore 
-      const httpErr = err as HttpErrorResponse; //salvo errore in una variabile 
+  return next(authedReq).pipe( 
+    catchError((err: unknown) => { 
+      const httpErr = err as HttpErrorResponse; 
 
 
-      if (httpErr.status !== 401) { //verifico a quale errore fa riferimento 
+      if (httpErr.status !== 401) { 
         return throwError(() => err);
       }
 
 
-      if (!token) { //verifico se token è null 
-        auth.clearAuthState(); //se null pulisco lo stato 
-        return throwError(() => err); //lancio errore 
+      if (!token) {  
+        auth.clearAuthState();  
+        return throwError(() => err); 
       }
 
 
-      if (!refreshObs) { //verifico se è consistente 
-        refreshObs = auth.refreshToken().pipe( //sfrutto il metodo authservice per richiesta al back alla rotta di refresh 
-          shareReplay(1), //evito chiamate duplicate, cosi tutte le richieste utilizzano il medesimo observables 
-          finalize(() => { refreshObs = null; }) //metto refresh a null in modo tale che puo essere riuytilizzato 
+      if (!refreshObs) { 
+        refreshObs = auth.refreshToken().pipe(  
+          shareReplay(1), 
+          finalize(() => { refreshObs = null; })  
         );
       }
 
 
-      return refreshObs.pipe( //ritento la richiesta alla rotta che aveva generato errore 
-        switchMap((newToken) => { //attende il nuovo token e invi la richiesta con il nuovo header 
+      return refreshObs.pipe(  
+        switchMap((newToken) => {  
           return next(withAuth(req, newToken));
         }),
-        catchError((refreshErr: HttpErrorResponse) => { //se la richiesta fallisce 
+        catchError((refreshErr: HttpErrorResponse) => {  
           if (refreshErr.status === 401 || refreshErr.status === 403) {
-            auth.clearAuthState(); //pulisco lo stato 
-            router.navigate(['/login']); //reinderizzo al login 
+            auth.clearAuthState();  
+            router.navigate(['/login']);  
           }
           return throwError(() => refreshErr);
         })

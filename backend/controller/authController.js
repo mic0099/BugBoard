@@ -1,6 +1,5 @@
 
-import {User} from "../models/Database.js" 
-import { RefreshToken } from "../models/Database.js"; 
+import {User, RefreshToken} from "../models/Database.js" 
 import bcrypt from 'bcrypt'; 
 import { controllErr } from "../utils/controllError.js" 
 import jwt from 'jsonwebtoken'

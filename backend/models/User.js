@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize" 
 
-//gestire formattazione password e gestione spazi stringhe
+
 export function createModel(database) { 
   database.define('User', {
     userId: {

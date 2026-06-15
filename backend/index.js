@@ -1,13 +1,11 @@
 import express from "express";
 import cors from "cors";  
 import dotenv from "dotenv";  
-import path from "path";
 import { fileURLToPath } from "url";
-import { dirname } from "path";  
+import path, { dirname } from "path";  
 import cookieParser from "cookie-parser"; 
 import { authRouter } from "./routes/authRouter.js"; 
 import { issueRouter } from "./routes/issueRouter.js"; 
-import { database } from "./models/Database.js";
 import { projectRouter } from "./routes/projectRouter.js"; 
 import {commentRouter} from "./routes/commentRouter.js"; 
 

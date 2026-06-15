@@ -8,8 +8,6 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router: Router = inject(Router);
   const toastr: ToastrService = inject(ToastrService);
 
-  console.log('eseguito');
-
   if (!authService.isAuthenticated()) {
     router.navigate(['/login']);
     return false;

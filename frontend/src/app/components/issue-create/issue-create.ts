@@ -149,14 +149,14 @@ onSubmit(fileInput: HTMLInputElement){
 
     let tags$ = of(res);
 
-    //STEP 1: TAGS (solo se presenti)
+    
     if (filteredTags.length > 0) {
       tags$ = this.api.addTags(issueId, filteredTags);
     }
 
     return tags$.pipe(
 
-      //STEP 2: IMAGE
+      
       switchMap(() => {
 
         if (!this.selectedFile) {

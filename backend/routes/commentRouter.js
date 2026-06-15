@@ -9,5 +9,4 @@ import { enforceAuth } from "../middleware/authorization.js";
 export const commentRouter = Router(); 
 
 commentRouter.get('/issues/:issueId/comments',enforceAuth,commentController.getComments);  
-
 commentRouter.post("/comments",enforceAuth,validationRulesComment,validatorRequest,commentController.comment); 

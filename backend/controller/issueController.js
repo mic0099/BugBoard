@@ -1,12 +1,6 @@
-import { Issue } from "../models/Database.js";
-import { User } from "../models/Database.js";
-import { Project } from "../models/Database.js";
-import { Comment } from "../models/Database.js";
-import { Tag } from "../models/Database.js";
+import { Issue, User, Project, Tag, Image } from "../models/Database.js";
 import { controllErr } from "../utils/controllError.js";
-import { Image } from "../models/Database.js"; 
-import { database } from "../models/Database.js"; 
-import { Sequelize } from "sequelize";
+
 
 export class issueController {
 

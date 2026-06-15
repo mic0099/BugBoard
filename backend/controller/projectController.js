@@ -1,11 +1,5 @@
-import { Issue } from "../models/Database.js";
-import { User } from "../models/Database.js";
-import { Project } from "../models/Database.js";
-import { Comment } from "../models/Database.js";
-import { Tag } from "../models/Database.js";
+import { Issue, User, Project, database } from "../models/Database.js";
 import { controllErr } from "../utils/controllError.js";
-import { Image } from "../models/Database.js"; 
-import { database } from "../models/Database.js"; 
 import { Sequelize } from "sequelize";
 
 export class projectController{ 
@@ -122,7 +116,7 @@ static async addProject(req, res, next) {
           const { projectId } = req.params;
           const { name, emails, removeEmails } = req.body; 
     
-          const result = await database.transaction(async (t) => {
+          await database.transaction(async (t) => {
             const project = await Project.findByPk(projectId, { transaction: t });
     
     

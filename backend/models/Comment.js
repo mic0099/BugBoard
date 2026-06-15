@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 
-//gestire noOnlySpace
 
 export function createModel(database){
   database.define('Comment',{

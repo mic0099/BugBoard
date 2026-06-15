@@ -1,7 +1,6 @@
 import multer from "multer";
-import path from "path";
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import path, { dirname } from 'path';
 
 
 const __filename = fileURLToPath(import.meta.url); //percorso completo del file corrente 
@@ -13,7 +12,7 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, "../uploads")); //callback di multer 
   },
   filename: function (req, file, cb) { //definisce come nominare il file quando viene salvato  
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9); //genera stringa univoca
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9); 
     const ext = path.extname(file.originalname); //prende estensione del file originale 
     cb(null, file.fieldname + "-" + uniqueSuffix + ext);  //compone il nuovo nome del file 
   },

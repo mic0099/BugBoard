@@ -31,7 +31,6 @@ export class ProjectList implements OnInit{
 
   loadProjects(){
     this.projectService.getProjects().subscribe(data => { 
-      console.log("DATA:", data);
       this.projects = data;
     });
   } 

@@ -46,13 +46,13 @@ onSubmit(){
       return;
     } 
 
-    this.authApi.login({ //chiama il back
-       email: this.loginForm.value.email as string, //valore passato al back 
-       password: this.loginForm.value.password as string, //valore passato al back 
-       rememberMe: this.loginForm.value.rememberMe as boolean, //valore passato al back 
+    this.authApi.login({ 
+       email: this.loginForm.value.email as string, 
+       password: this.loginForm.value.password as string, 
+       rememberMe: this.loginForm.value.rememberMe as boolean, 
     })
-    .pipe( //metodo degli observables, utilizzato per collegare una serie di operatori come map o tap 
-      tap(res => { //fa un azione collaterale 
+    .pipe( 
+      tap(res => { 
         if(String(this.loginForm.value.rememberMe)==='true'){
           localStorage.setItem("ricordami",String(this.loginForm.value.rememberMe));
         }else if(String(this.loginForm.value.rememberMe)==='false'){
