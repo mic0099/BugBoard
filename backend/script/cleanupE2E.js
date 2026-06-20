@@ -1,15 +1,9 @@
 import { Op } from "sequelize";
 
-import {
-  database,
-  User,
-  Project,
-  Issue,
-  Comment,
-  Tag,
-  Image,
-  RefreshToken
-} from "../models/Database.js";
+import {database,User,Project,Issue,Comment,Tag,Image,RefreshToken} from "../models/Database.js";
+
+const UserProjects = database.models.UserProjects;
+const IssueTags = database.models.IssueTags;
 
 async function cleanupE2E() {
 
@@ -57,16 +51,14 @@ async function cleanupE2E() {
         transaction
       });
 
-      await database.query(
-        `
-        DELETE FROM IssueTags
-        WHERE issueId IN (:issueIds)
-        `,
-        {
-          replacements: { issueIds },
-          transaction
-        }
-      );
+      await IssueTags.destroy({
+        where: {
+          issueId: {
+            [Op.in]: issueIds
+          }
+        },
+        transaction
+      });
 
       await Issue.destroy({
         where: {
@@ -102,16 +94,14 @@ async function cleanupE2E() {
 
     if (projectIds.length > 0) {
 
-      await database.query(
-        `
-        DELETE FROM UserProjects
-        WHERE projectId IN (:projectIds)
-        `,
-        {
-          replacements: { projectIds },
-          transaction
-        }
-      );
+      await UserProjects.destroy({
+        where: {
+          projectId: {
+            [Op.in]: projectIds
+          }
+        },
+        transaction
+      });
 
       await Project.destroy({
         where: {

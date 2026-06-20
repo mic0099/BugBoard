@@ -34,7 +34,7 @@ export function createModel(database){
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        tableName: 'Issue',
+        model: 'Issue',
         key: 'issueId'
       },
       onUpdate: 'CASCADE',

@@ -8,12 +8,21 @@ import {createModel as CreateImageModel } from "./Image.js";
 import {createModel as CreateRefreshTokensModel } from "./RefreshToken.js"; 
 
 import bcrypt from "bcrypt"; 
+import fs from "fs";
+import path from "path"; 
+import dotenv from "dotenv";
+dotenv.config(); 
 
-
-export const database = new Sequelize({
-  dialect: 'sqlite',
-  storage: 'data/data.sqlite', 
-}
+export const database = new Sequelize(  
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    dialect: process.env.DIALECT,
+    logging: false
+  },
 ); 
 
 CreateUserModel(database); 
@@ -59,10 +68,14 @@ User.addHook('beforeCreate',async (user)=>{
      user.password = await bcrypt.hash(user.password,salt);  
 });
 
-
-database.sync().then( () => {     
-  console.log("Database synced correctly");
-}).catch( err => {
-  console.error("Error with database synchronization: " + err.message);
-});  
-
+database.authenticate()
+  .then(() => {
+    console.log("PostgreSQL connected");
+    return database.sync(); 
+  })
+  .then(() => {
+    console.log("Database synced correctly");
+  })
+  .catch(err => {
+    console.error(err);
+  });

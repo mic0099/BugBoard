@@ -134,13 +134,18 @@ test.describe('Issue Creation', () => {
     await expect(image)
       .toBeVisible();
 
-    const isLoaded = await image.evaluate(
-      (img: HTMLImageElement) => {
-        return img.complete && img.naturalWidth > 0;
-      }
-    );
-
-    expect(isLoaded)
+    await expect
+      .poll(
+        async () =>
+          await image.evaluate(
+            (img: HTMLImageElement) =>
+              img.complete && img.naturalWidth > 0
+          ),
+        {
+          timeout: 10000,
+          message: 'Image was not fully loaded'
+        }
+      )
       .toBe(true);
 
   });

@@ -1,5 +1,11 @@
-import { Issue, User, Project, database } from "../models/Database.js";
+import { Issue } from "../models/Database.js";
+import { User } from "../models/Database.js";
+import { Project } from "../models/Database.js";
+import { Comment } from "../models/Database.js";
+import { Tag } from "../models/Database.js";
 import { controllErr } from "../utils/controllError.js";
+import { Image } from "../models/Database.js"; 
+import { database } from "../models/Database.js"; 
 import { Sequelize } from "sequelize";
 
 export class projectController{ 
@@ -58,7 +64,7 @@ static async addProject(req, res, next) {
       });
     } else {
       res.status(201).json({
-        message: "project created successfully"
+        message: "project created successfully" 
       });
     }
 
@@ -97,7 +103,7 @@ static async addProject(req, res, next) {
                 required: false
               }
             ],
-            group: ['Project.projectId','Users.userId'],
+            group: ['Project.projectId','Project.name','Project.createdAt','Users.userId','Users.email','Users.name','Users.surname','UserProjects.userId','UserProjects.projectId','UserProjects.createdAt','UserProjects.updatedAt'],
             order: [['name', 'ASC']],
             subQuery: false
           });
@@ -116,7 +122,7 @@ static async addProject(req, res, next) {
           const { projectId } = req.params;
           const { name, emails, removeEmails } = req.body; 
     
-          await database.transaction(async (t) => {
+            const result = await database.transaction(async (t) => {
             const project = await Project.findByPk(projectId, { transaction: t });
     
     

@@ -25,7 +25,7 @@ export function createModel(database){
             type: DataTypes.UUID,
             allowNull: false,
             references: {
-                tableName: 'User',
+                model: 'User',
                 key: 'userId'
             },
             onUpdate: 'CASCADE',

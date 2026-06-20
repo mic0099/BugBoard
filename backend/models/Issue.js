@@ -47,7 +47,7 @@ export function createModel(database){
             type: DataTypes.UUID,
             allowNull: false,
             references: {
-                tableName: 'User',
+                model: 'User',
                 key: 'userId'
             },
             onUpdate: 'CASCADE',
@@ -57,7 +57,7 @@ export function createModel(database){
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                tableName: 'Project',
+                model: 'Project',
                 key: 'projectId'
             },
             onUpdate: 'CASCADE',

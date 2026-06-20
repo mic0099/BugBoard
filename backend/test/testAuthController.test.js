@@ -31,8 +31,8 @@ test("should call next with error 400 if password is missing", async () => {
 
   const req = {
     body: {
-      name: "michele",
-      surname: "loreto",
+      name: "test",
+      surname: "test", 
       email: "test@test.com",
       admin: true
     }
@@ -63,8 +63,8 @@ test("should call next with error 400 if admin is missing", async () => {
 
   const req = {
     body: {
-      name: "michele",
-      surname: "loreto",
+      name: "test",
+      surname: "test",
       email: "test@test.com",
       password:"Test0099*"
     }
@@ -97,7 +97,7 @@ test("should create user successfully",async () => {
 
   const req = { 
     body: {
-      name: "admin",
+      name: "test",
       surname: "test",
       email: "test@test.com", 
       password:"Test0099*", 
@@ -114,8 +114,8 @@ test("should create user successfully",async () => {
 
   User.create.mockResolvedValue({
     id: 1,
-    name: "michele",
-    surname: "loreto",
+    name: "test",
+    surname: "test",
     email: "test@test.com",
     admin: true
   });  
@@ -123,8 +123,8 @@ test("should create user successfully",async () => {
   await authController.creaUser(req,res,next);  
 
   expect(User.create).toHaveBeenCalledWith({ 
-      name: "michele",
-      surname: "loreto",
+      name: "test",
+      surname: "test",
       email: "test@test.com", 
       password:"Test0099*", 
       admin: true    
@@ -134,8 +134,8 @@ test("should create user successfully",async () => {
 
   expect(res.json).toHaveBeenCalledWith({ 
   id: 1,
-  name: "michele",
-  surname: "loreto",
+  name: "test",
+  surname: "test",
   email: "test@test.com",
   admin: true
   }); 
