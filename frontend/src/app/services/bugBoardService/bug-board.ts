@@ -7,13 +7,14 @@ import { Newcomment } from '../../interfaces/newcomment';
 import { issueComments } from '../../interfaces/issueComment'; 
 import { CreateProjectRequest } from '../../interfaces/create-project-request';
 import { CreateIssueRequest } from '../../interfaces/create-issue-request';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BugBoard {
 
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient){}
 

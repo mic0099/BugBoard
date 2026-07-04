@@ -3,6 +3,7 @@ import { Injectable,inject } from '@angular/core';
 import { LoginResponse } from '../../interfaces/login-response'; 
 import { LoginRequest } from '../../interfaces/login-request';
 import { User } from '../../interfaces/user';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -19,17 +20,17 @@ private readonly HttpOption={
 }
 
 login(user:LoginRequest){
-    const url = 'http://localhost:3000/login'; 
+    const url = `${environment.apiUrl}/login`;
     return this.http.post<LoginResponse>(url,user,this.HttpOption); 
 }
 
 addUser(user:User){
-    const url = 'http://localhost:3000/register'; 
+    const url = `${environment.apiUrl}/register`;
     return this.http.post<User>(url,user,this.HttpOption); 
 }
 
 logout(){
-    const url = 'http://localhost:3000/logout'; 
+    const url = `${environment.apiUrl}/logout`;
     return this.http.post<{message:string}>(url,{},this.HttpOption); 
 
 }

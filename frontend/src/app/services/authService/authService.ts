@@ -4,6 +4,7 @@ import {jwtDecode} from 'jwt-decode';
 import { EMPTY, firstValueFrom, Observable } from 'rxjs';
 import {HttpClient} from '@angular/common/http'; 
 import {map,tap} from 'rxjs/operators'; 
+import { environment } from '../../../environments/environment';
 
 
 @Injectable({
@@ -55,7 +56,7 @@ loadUser() {
   const token = this.authState().token;
   if(!token){return EMPTY};
   return this.http.get<{ name: string; surname: string }>(
-    'http://localhost:3000/me'
+     `${environment.apiUrl}/me`
   ).pipe(
     tap(userData => {
       this.authState.update(state => {
@@ -153,7 +154,7 @@ updateToken(token:string,throwOnError=false,loadProfile=true){
 
 refreshToken(): Observable<string>{ 
    return this.http.get<{accessToken: string}>( 
-         'http://localhost:3000/refreshtoken',
+         `${environment.apiUrl}/refreshtoken`,
          {
             withCredentials:true,  
             responseType:'json'
