@@ -15,15 +15,17 @@ authController.logIn(req)
       httpOnly: true,
       maxAge: 7 * 24 * 60 *  60 *1000, 
       path: '/',           
-      secure: false,       
-      sameSite: 'lax'
+      secure: true,       
+      sameSite: 'none',
+      partitioned: 'true'
     });
   }else{
       res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       path: '/',           
-      secure: false,       
-      sameSite: 'lax'
+      secure: true,       
+      sameSite: 'none',
+      partitioned: 'true'
     });
   }
     return res.json({ success: true, ...userData });

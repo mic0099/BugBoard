@@ -179,8 +179,9 @@ static async logout(req,res,next){
   res.clearCookie("refreshToken", {
   httpOnly: true,
   path: '/',
-  secure: false,
-  sameSite: 'lax'
+  secure: true,
+  sameSite: 'none',
+  partitioned: 'true'
   });    
 
   res.status(200).json({message:"Logged out successfully"});
