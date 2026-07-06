@@ -8,10 +8,9 @@ import {createModel as CreateImageModel } from "./Image.js";
 import {createModel as CreateRefreshTokensModel } from "./RefreshToken.js"; 
 
 import bcrypt from "bcrypt"; 
-import fs from "fs";
-import path from "path"; 
 import dotenv from "dotenv";
 dotenv.config(); 
+const useSSL = process.env.DB_SSL === "true";
 
 export const database = new Sequelize(  
   process.env.DB_NAME,
@@ -22,12 +21,12 @@ export const database = new Sequelize(
     port: Number(process.env.DB_PORT),
     dialect: process.env.DIALECT,
     logging: false,
-    dialectOptions: {
+    dialectOptions: useSSL ? {
       ssl: {
         require: true,
         rejectUnauthorized: false
-      }
-    }
+      },
+    }: {},
   },
 ); 
 

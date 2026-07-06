@@ -59,132 +59,82 @@
       </div>
     </div>
 
-    <div class="flex items-center justify-start gap-4 mb-10 w-full no-scrollbar"> 
+    <div class="flex flex-wrap items-center gap-3 mb-10 w-full"> 
 
-      <div class="flex bg-white/10 p-1 rounded-xl border border-white/10">
+      <div class="flex flex-wrap bg-white/10 p-1 rounded-xl border border-white/10 gap-1">
         <button *ngFor="let s of ['all', 'todo', 'open', 'in_progress', 'closed']"
                 (click)="setStatusFilter(s)"
                 [ngClass]="activeStatus === s ? 'bg-white/20 text-white shadow-sm' : 'text-gray-300 hover:text-white hover:bg-white/10'"
-                class="px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all">
+                class="px-4 py-2 text-xs font-bold uppercase whitespace-nowrap tracking-wider rounded-lg transition-all">
           {{ s.replace('_', ' ') }}
         </button>
       </div>
-
-      <div class="flex items-center gap-3 ml-auto">
-      
-        <!-- Bottone Priorità -->
+    
+      <div class="flex flex-wrap items-center gap-3 sm:ml-auto">
+          
         <div class="relative">
-          <button 
-            (click)="toggleMenu('priority', $event)"
-            class="flex items-center gap-2 px-4 py-2 
-            bg-white/10 border border-white/20 rounded-xl 
-            text-sm font-medium text-gray-200
-            hover:bg-white/20 hover:border-white/30 transition-all">
-            
+          <button (click)="toggleMenu('priority', $event)"
+                  class="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-sm font-medium text-gray-200 hover:bg-white/20 transition-all">
             <span>Priority</span>
-
-            <span *ngIf="selectedPriorities.length > 0" 
-                  class="bg-blue-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">
+            <span *ngIf="selectedPriorities.length > 0" class="bg-blue-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">
               {{ selectedPriorities.length }}
             </span>
-
-            <svg [ngClass]="{'rotate-180': openedMenu === 'priority'}" 
-                class="w-4 h-4 text-gray-400 transition-transform duration-200" 
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path d="M19 9l-7 7-7-7" stroke-width="2"/>
-            </svg>
-
+            <svg [ngClass]="{'rotate-180': openedMenu === 'priority'}" class="w-4 h-4 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
           </button>
-
-          <div *ngIf="openedMenu === 'priority'"
-              (click)="$event.stopPropagation()"
-              class="absolute right-0 mt-2 w-52 z-50
-              bg-gray-800 border border-gray-700
-              rounded-xl shadow-2xl p-2 flex flex-col gap-1">
+    
+          <div *ngIf="openedMenu === 'priority'" 
+            (click)="$event.stopPropagation()"
+            class="absolute left-0 sm:left-auto right-0 sm:right-0 mt-2 w-full sm:w-52 z-[60]
+            bg-gray-800 border border-gray-700
+            rounded-xl shadow-2xl p-2 flex flex-col gap-1">
 
             <label *ngFor="let p of priorities"
-                  class="flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-lg cursor-pointer group transition-colors">
-              
+              class="flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-lg cursor-pointer">
+            
               <input type="checkbox"
-                    [checked]="selectedPriorities.includes(p)"
-                    (change)="togglePriority(p, $event)"
-                    class="w-4 h-4 rounded border-gray-500 text-blue-500 focus:ring-blue-500 bg-gray-700">
+                [checked]="selectedPriorities.includes(p)"
+                (change)="togglePriority(p, $event)"
+                class="w-4 h-4 rounded border-gray-500 text-blue-500 bg-gray-700">
 
-              <span class="text-sm capitalize text-gray-300 group-hover:text-white">
-                {{ p }}
-              </span>
-
+              <span class="text-sm capitalize text-gray-300">{{ p }}</span>
             </label>
           </div>
         </div>
-
-        <!-- Bottone Tipo -->
+    
         <div class="relative">
-          <button 
-            (click)="toggleMenu('type', $event)"
-            class="flex items-center gap-2 px-4 py-2 
-            bg-white/10 border border-white/20 rounded-xl 
-            text-sm font-medium text-gray-200
-            hover:bg-white/20 hover:border-white/30 transition-all">
-            
+          <button (click)="toggleMenu('type', $event)"
+                  class="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-sm font-medium text-gray-200 hover:bg-white/20 transition-all">
             <span>Type</span>
-
-            <span *ngIf="selectedTypes.length > 0" 
-                  class="bg-blue-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">
+            <span *ngIf="selectedTypes.length > 0" class="bg-blue-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">
               {{ selectedTypes.length }}
             </span>
-
-            <svg [ngClass]="{'rotate-180': openedMenu === 'type'}" 
-                class="w-4 h-4 text-gray-400 transition-transform duration-200" 
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path d="M19 9l-7 7-7-7" stroke-width="2"/>
-            </svg>
-
+            <svg [ngClass]="{'rotate-180': openedMenu === 'type'}" class="w-4 h-4 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
           </button>
-
-          <div *ngIf="openedMenu === 'type'"
+    
+          <div *ngIf="openedMenu === 'type'" 
               (click)="$event.stopPropagation()"
-              class="absolute right-0 mt-2 w-52 z-50
-              bg-gray-800 border border-gray-700
-              rounded-xl shadow-2xl p-2 flex flex-col gap-1">
+              class="absolute right-0 mt-2 w-52 z-50 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl p-2 flex flex-col gap-1">
 
-            <label *ngFor="let t of types"
-                  class="flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-lg cursor-pointer group transition-colors">
-              
-              <input type="checkbox"
-                    [checked]="selectedTypes.includes(t)"
-                    (change)="toggleType(t, $event)"
-                    class="w-4 h-4 rounded border-gray-500 text-blue-500 focus:ring-blue-500 bg-gray-700">
+              <label *ngFor="let t of types"
+                    class="flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-lg cursor-pointer transition-colors">
+                
+                <input type="checkbox"
+                      [checked]="selectedTypes.includes(t)"
+                      (change)="toggleType(t, $event)"
+                      class="w-4 h-4 rounded border-gray-500 text-blue-500 bg-gray-700">
 
-              <span class="text-sm capitalize text-gray-300 group-hover:text-white">
-                {{ t }}
-              </span>
-
-            </label>
+                <span class="text-sm capitalize text-gray-300 hover:text-white">{{ t }}</span>
+              </label>
           </div>
         </div>
-
-        <div class="h-8 w-px bg-white/10 mx-1"></div>
-
+    
         <button (click)="toggleSortDirection()" 
-                class="flex items-center gap-2 px-4 py-2 
-                text-sm font-semibold 
-                text-blue-400 
-                hover:bg-blue-500/10 
-                rounded-xl 
-                transition-all">
-
-          <svg [ngClass]="{'rotate-180': sortDirection === 'desc'}" 
-               class="w-4 h-4 transition-transform duration-300" 
-               fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" stroke-width="2"/>
-          </svg>
-
-          {{ currentSortLabel }}
+                class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-blue-400 hover:bg-blue-500/10 rounded-xl transition-all">
+          <svg [ngClass]="{'rotate-180': sortDirection === 'desc'}" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" stroke-width="2"/></svg>
+          <span>{{ currentSortLabel }}</span>
         </button>
-
       </div>
-    </div> 
+    </div>
 
     <!--MESSAGGIO SOLO SE TAG SENZA RISULTATI -->
     <div *ngIf="currentTag && filteredIssues.length === 0" 
