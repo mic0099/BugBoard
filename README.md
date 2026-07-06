@@ -25,9 +25,9 @@ Assicurati di avere installato:
 ### Installazione e Avvio
 1. Clona il repository:
    ```bash
-   git clone [https://github.com/mic0099/BugBoard.git](https://github.com/mic0099/BugBoard.git)
+   git clone https://github.com/mic0099/BugBoard.git
 
-2. Vai nella cartella:
+2. Vai nella cartella del backend:
    ```bash
    cd bugboard/backend
 
@@ -52,6 +52,6 @@ Assicurati di avere installato:
   ng serve 
 
 8. Lapplicazione è ora disponibile all'indirizzo: 
-    ```bash
+   ```bash
     http://localhost:4200
 
