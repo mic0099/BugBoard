@@ -48,7 +48,7 @@ Assicurati di avere installato:
    npm install
 
 7. Avvia il forntend:
-  ```bash
+   ```bash
   ng serve 
 
 8. Lapplicazione è ora disponibile all'indirizzo: 
