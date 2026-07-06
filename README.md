@@ -49,7 +49,7 @@ Assicurati di avere installato:
 
 7. Avvia il forntend:
    ```bash
-  ng serve 
+   ng serve 
 
 8. Lapplicazione è ora disponibile all'indirizzo: 
    ```bash
