@@ -1,6 +1,7 @@
 import {Router} from "express"; 
 import {authController} from "../controller/authController.js"; 
 import {enforceAuth} from "../middleware/authorization.js"; 
+import {requireAdmin} from "../middleware/requireAdmin.js"; 
 
 
 export const authRouter = Router(); 
@@ -13,7 +14,7 @@ authController.logIn(req)
     if(req.body.rememberMe){
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      maxAge: 7 * 24 * 60 *  60 *1000, 
+      maxAge: 7 * 24 * 60 * 60 *1000, 
       path: '/',           
       secure: true,       
       sameSite: 'none',
@@ -37,7 +38,7 @@ authController.logIn(req)
     
 }); 
 
-authRouter.post("/register",authController.creaUser); 
+authRouter.post("/register",enforceAuth,requireAdmin,authController.creaUser); 
 authRouter.get("/refreshtoken",authController.rigToken);  
 authRouter.get("/me",enforceAuth,authController.loadUser); 
 authRouter.post("/logout",enforceAuth,authController.logout);

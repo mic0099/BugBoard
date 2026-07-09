@@ -68,7 +68,7 @@ export class authController{
            const accessToken = jwt.sign(
            {userId:lUser.userId,admin:lUser.admin}, 
            process.env.TOKEN_SECRET,
-           {expiresIn: '1m'}, 
+           {expiresIn: '5m'}, 
        ); 
    
            const refreshToken = jwt.sign(
@@ -77,7 +77,7 @@ export class authController{
             {expiresIn:'7d'}, 
        );
    
-        const day = 7 * 24 * 60 * 1000; 
+        const day = 7 * 24 * 60 * 60 * 1000;  
         const expiresAt = new Date(Date.now()+day);  
    
       if(req.body.rememberMe){   
@@ -130,7 +130,7 @@ static async rigToken(req, res, next){
         admin: decoded.admin
       },
       process.env.TOKEN_SECRET,
-      { expiresIn: '1m' }
+      { expiresIn: '5m' }
     );
 
     return res.json({ accessToken });
