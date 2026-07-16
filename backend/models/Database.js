@@ -73,7 +73,7 @@ User.addHook('beforeCreate',async (user)=>{
      user.password = await bcrypt.hash(user.password,salt);  
 });
 
-database.authenticate()
+database.authenticate({force:true})
   .then(() => {
     console.log("PostgreSQL connected");
     return database.sync(); 
