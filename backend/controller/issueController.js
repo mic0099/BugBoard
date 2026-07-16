@@ -238,6 +238,10 @@ static async findIssueByTag(req,res,next){
       controllErr('missing projectId',400)
     }
 
+    if(isNaN(Number(req.query.projectId))){
+      controllErr('projectId must be a number',400)
+    }
+
     const tag = await Tag.findOne({
       where:{content:req.query.content}
     })
