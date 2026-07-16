@@ -55,3 +55,23 @@ Assicurati di avere installato:
    ```bash
     http://localhost:4200
 
+9. Per poter accedere all'applicazione in locale, usa le seguenti credenziali di accesso:
+
+- Email: `MarioRossi@gmail.com`
+- Password: `Mario1234!`
+
+## Test
+
+### Test unitari (Backend)
+Dalla cartella `backend`, con i container Docker avviati:
+```bash
+npm test
+```
+
+### Test end-to-end (Playwright)
+Dalla cartella `frontend`, assicurati che sia backend che frontend siano in esecuzione (`docker-compose up -d` e `ng serve`), poi lancia:
+```bash
+npm run test:e2e
+```
+
+
