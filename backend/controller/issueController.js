@@ -1,5 +1,6 @@
 import { Issue, User, Project, Tag, Image } from "../models/Database.js";
 import { controllErr } from "../utils/controllError.js";
+import { uploadToBlob } from "../utils/azureBlob.js"; 
 
 
 export class issueController {
@@ -298,7 +299,12 @@ static async findIssueByTag(req,res,next){
         controllErr("Issue already has an associated image",409); 
       }
 
-      const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`; 
+      let imageUrl;
+      if (process.env.STORAGE_MODE === "azure") {
+        imageUrl = await uploadToBlob(req.file);
+      } else {
+        imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+      }
       console.log(imageUrl);
       
       const newPost = await Image.create({
